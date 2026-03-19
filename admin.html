@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리자 — XP Shop Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nanum Gothic',Tahoma,sans-serif;background:#0a1a3a;min-height:100vh;overflow:hidden;}
+.admin-desktop{width:100vw;height:100vh;display:flex;flex-direction:column;}
+.admin-taskbar{background:linear-gradient(180deg,#1a1a2e,#16213e,#0f3460);border-bottom:2px solid #4a7fe0;padding:6px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.admin-logo{color:#4a9eff;font-size:16px;font-weight:800;}
+.admin-logo span{color:#ffcc00;}
+.nav-btn{height:28px;padding:0 12px;background:rgba(74,158,255,0.15);border:1px solid rgba(74,158,255,0.4);border-radius:3px;color:#aad4ff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Nanum Gothic',Tahoma,sans-serif;}
+.nav-btn:hover,.nav-btn.on{background:rgba(74,158,255,0.35);color:white;border-color:#4a9eff;}
+.admin-clock{margin-left:auto;color:#aad4ff;font-size:11px;text-align:right;line-height:1.4;}
+.windows-area{flex:1;position:relative;overflow:hidden;}
+.xp-win{position:absolute;border-radius:8px 8px 4px 4px;box-shadow:2px 2px 16px rgba(0,0,0,0.7);display:none;overflow:hidden;min-width:300px;background:#f0f0ea;}
+.xp-win.on{display:block;}
+.title-bar{background:linear-gradient(180deg,#3168d5,#1957c2 8%,#1957c2 92%,#3168d5);padding:4px 6px;display:flex;align-items:center;gap:6px;height:30px;border-radius:6px 6px 0 0;cursor:move;}
+.tb-text{flex:1;color:white;font-size:12px;font-weight:700;}
+.title-btn{width:21px;height:21px;border-radius:3px;border:none;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:white;}
+.btn-cls{background:linear-gradient(180deg,#e8605a,#c22a2a);border:1px solid #991a1a;margin-left:2px;}
+.title-btn:hover{filter:brightness(1.2);}
+.filter-bar{padding:6px 10px;background:#e8e5dc;border-bottom:1px solid #aca899;display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;}
+.filter-bar select,.filter-bar input{height:22px;border:1px solid #7f9db9;background:white;font-size:11px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 4px;}
+.win-body{background:#f0f0ea;overflow-y:auto;border:1px solid #aca899;border-top:none;}
+.win-body::-webkit-scrollbar{width:14px;}
+.win-body::-webkit-scrollbar-track{background:#c8c0b8;}
+.win-body::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#e0ddd5,#b8b4ac,#e0ddd5);border:1px solid #888;}
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px;}
+.stat-card{background:white;border:1px solid #ccc;padding:12px;text-align:center;}
+.sc-icon{font-size:24px;display:block;margin-bottom:4px;}
+.sc-val{font-size:22px;font-weight:800;color:#cc0000;}
+.sc-label{font-size:11px;color:#888;margin-top:2px;}
+.xp-table{width:100%;border-collapse:collapse;font-size:12px;}
+.xp-table th{background:linear-gradient(180deg,#e0ddd5,#ccc9c0);border:1px solid #aca899;padding:5px 8px;font-weight:700;text-align:left;white-space:nowrap;}
+.xp-table td{border:1px solid #d4d0c8;padding:5px 8px;background:white;}
+.xp-table tr:nth-child(even) td{background:#f5f3ef;}
+.xp-table tr:hover td{background:#e8f0fe;cursor:pointer;}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:2px;}
+.s-paid{background:#316ac5;color:white;}.s-preparing{background:#e67e22;color:white;}.s-shipping{background:#27ae60;color:white;}.s-delivered{background:#2c3e50;color:white;}.s-cancelled{background:#c0392b;color:white;}
+.s-answered{background:#27ae60;color:white;}.s-waiting{background:#e67e22;color:white;}
+.section{background:white;border:1px inset #ccc;padding:12px;margin:12px;}
+.section-title{font-size:13px;font-weight:800;color:#003399;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #d4d0c8;}
+.form-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+.form-label{font-size:12px;font-weight:700;color:#333;width:80px;flex-shrink:0;}
+.xp-input{height:24px;border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 6px;flex:1;}
+.xp-select{height:24px;border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 4px;flex:1;}
+.xp-textarea{border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:6px;width:100%;resize:vertical;min-height:60px;}
+.xp-btn{height:26px;padding:0 12px;border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-size:11px;font-weight:700;font-family:'Nanum Gothic',Tahoma,sans-serif;border-radius:2px;color:#333;}
+.xp-btn.primary{background:linear-gradient(180deg,#5aa0e8,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.xp-btn.success{background:linear-gradient(180deg,#5cb85c,#27ae60);color:white;border-color:#1a7a2a;}
+.xp-btn.danger{background:linear-gradient(180deg,#e8605a,#c22a2a);color:white;border-color:#991a1a;}
+.xp-btn:hover{filter:brightness(1.05);}
+.xp-btn:active{border-style:inset;}
+.btn-row{display:flex;gap:6px;padding:8px 12px;border-top:1px solid #aca899;background:#f0f0ea;}
+.photo-card{background:white;border:1px solid #ccc;padding:12px;margin:0 12px 12px;}
+.photo-header{display:flex;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e8e8e8;}
+.photo-grid-view{display:flex;gap:6px;flex-wrap:wrap;}
+.photo-thumb{width:70px;height:70px;object-fit:cover;border:2px solid #ccc;cursor:pointer;}
+.photo-thumb:hover{border-color:#316ac5;}
+.admin-login{position:fixed;inset:0;background:#0a1a3a;display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#1a2a4a;border:2px solid #4a9eff;border-radius:8px;padding:32px;width:300px;text-align:center;}
+.login-logo{font-size:22px;font-weight:800;color:#4a9eff;margin-bottom:16px;}
+.login-logo span{color:#ffcc00;}
+.login-input{width:100%;height:32px;border:1px solid #4a9eff;background:#0d1b2a;color:#aad4ff;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 10px;margin-bottom:10px;border-radius:3px;}
+.login-btn{width:100%;height:36px;background:linear-gradient(180deg,#3a7bd5,#1957c2);border:none;border-radius:4px;color:white;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',Tahoma,sans-serif;}
+.photo-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:none;align-items:center;justify-content:center;}
+.photo-modal.on{display:flex;}
+.photo-modal img{max-width:80vw;max-height:80vh;border:3px solid #4a9eff;}
+.photo-modal-close{position:absolute;top:20px;right:20px;background:#c22a2a;color:white;border:none;border-radius:4px;padding:8px 14px;cursor:pointer;font-size:14px;font-weight:800;}
+#admin-notif{position:fixed;top:16px;right:16px;background:#1a3a6a;border:1px solid #4a9eff;padding:10px 16px;font-size:12px;color:#aad4ff;z-index:99999;max-width:260px;border-radius:4px;display:none;}
+</style>
+</head>
+<body>
+
+<div class="admin-login" id="admin-login">
+  <div class="login-box">
+    <div class="login-logo">🖥️ XP <span>ADMIN</span></div>
+    <input class="login-input" id="admin-email" type="email" placeholder="관리자 이메일" onkeydown="if(event.key==='Enter')checkLogin()">
+    <input class="login-input" id="admin-pw" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')checkLogin()">
+    <button class="login-btn" onclick="checkLogin()">🔑 로그인</button>
+    <div style="font-size:11px;color:#446;margin-top:10px;">Firebase 관리자 계정으로 로그인</div>
+  </div>
+</div>
+
+<div class="admin-desktop" id="admin-desktop" style="display:none;">
+  <div class="admin-taskbar">
+    <span class="admin-logo">🖥️ XP <span>ADMIN</span></span>
+    <div style="width:2px;height:20px;background:rgba(74,158,255,0.3);"></div>
+    <button class="nav-btn on" onclick="openWin('dashboard')" id="nav-dashboard">📊 대시보드</button>
+    <button class="nav-btn" onclick="openWin('orders')" id="nav-orders">📦 주문관리</button>
+    <button class="nav-btn" onclick="openWin('photos')" id="nav-photos">📷 고객사진</button>
+    <button class="nav-btn" onclick="openWin('inquiries')" id="nav-inquiries">💬 문의관리</button>
+    <button class="nav-btn" onclick="openWin('product')" id="nav-product">👕 상품관리</button>
+    <div class="admin-clock" id="admin-clock"></div>
+  </div>
+
+  <div class="windows-area" id="windows-area">
+
+    <!-- 대시보드 -->
+    <div class="xp-win on" id="win-dashboard" style="width:620px;top:20px;left:20px;">
+      <div class="title-bar" onmousedown="startDrag(event,'win-dashboard')">
+        <span style="font-size:14px;">📊</span><span class="tb-text">대시보드</span>
+        <button class="title-btn btn-cls" onclick="xpHide('win-dashboard','dashboard')">✕</button>
+      </div>
+      <div class="win-body" style="max-height:420px;">
+        <div class="stat-cards" id="stat-cards">
+          <div class="stat-card"><span class="sc-icon">📦</span><span class="sc-val" id="st-orders">-</span><div class="sc-label">총 주문</div></div>
+          <div class="stat-card"><span class="sc-icon">💰</span><span class="sc-val" id="st-revenue">-</span><div class="sc-label">총 매출</div></div>
+          <div class="stat-card"><span class="sc-icon">👥</span><span class="sc-val" id="st-users">-</span><div class="sc-label">총 회원</div></div>
+          <div class="stat-card"><span class="sc-icon">💬</span><span class="sc-val" id="st-inq">-</span><div class="sc-label">미답변 문의</div></div>
+        </div>
+        <div style="padding:0 12px 12px;">
+          <div style="font-size:13px;font-weight:800;color:#003399;margin-bottom:8px;border-bottom:2px solid #003399;padding-bottom:6px;">🕐 최근 주문</div>
+          <div id="recent-orders"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 주문 관리 -->
+    <div class="xp-win" id="win-orders" style="width:780px;top:30px;left:40px;">
+      <div class="title-bar" onmousedown="startDrag(event,'win-orders')">
+        <span style="font-size:14px;">📦</span><span class="tb-text">주문 관리</span>
+        <button class="title-btn btn-cls" onclick="xpHide('win-orders','orders')">✕</button>
+      </div>
+      <div class="filter-bar">
+        <select id="filter-status" onchange="loadOrders()">
+          <option value="">전체 상태</option>
+          <option value="paid">결제완료</option><option value="preparing">제작중</option>
+          <option value="shipping">배송중</option><option value="delivered">배송완료</option><option value="cancelled">취소</option>
+        </select>
+        <input id="filter-search" placeholder="주문번호 검색" style="width:140px;" oninput="loadOrders()">
+        <span style="margin-left:auto;font-size:11px;color:#666;" id="orders-count">총 0건</span>
+      </div>
+      <div class="win-body" style="max-height:460px;">
+        <table class="xp-table">
+          <thead><tr><th>주문번호</th><th>상태</th><th>고객명</th><th>상품/옵션</th><th>금액</th><th>주문일</th><th>상태변경</th></tr></thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+      <div class="btn-row"><button class="xp-btn" onclick="loadOrders()">🔄 새로고침</button></div>
+    </div>
+
+    <!-- 고객 사진 -->
+    <div class="xp-win" id="win-photos" style="width:580px;top:40px;left:60px;">
+      <div class="title-bar" onmousedown="startDrag(event,'win-photos')">
+        <span style="font-size:14px;">📷</span><span class="tb-text">고객 업로드 사진 확인</span>
+        <button class="title-btn btn-cls" onclick="xpHide('win-photos','photos')">✕</button>
+      </div>
+      <div class="win-body" style="max-height:480px;" id="photos-body">
+        <div style="padding:20px;text-align:center;color:#888;">불러오는 중...</div>
+      </div>
+    </div>
+
+    <!-- 문의 관리 -->
+    <div class="xp-win" id="win-inquiries" style="width:640px;top:50px;left:70px;">
+      <div class="title-bar" onmousedown="startDrag(event,'win-inquiries')">
+        <span style="font-size:14px;">💬</span><span class="tb-text">문의 관리</span>
+        <button class="title-btn btn-cls" onclick="xpHide('win-inquiries','inquiries')">✕</button>
+      </div>
+      <div class="filter-bar">
+        <select id="filter-inq" onchange="loadInquiries()">
+          <option value="">전체</option><option value="false">답변 대기</option><option value="true">답변 완료</option>
+        </select>
+        <button class="xp-btn primary" onclick="loadInquiries()">🔄 새로고침</button>
+      </div>
+      <div class="win-body" style="max-height:460px;" id="inq-body">
+        <div style="padding:20px;text-align:center;color:#888;">불러오는 중...</div>
+      </div>
+    </div>
+
+    <!-- 상품 관리 -->
+    <div class="xp-win" id="win-product" style="width:440px;top:60px;left:80px;">
+      <div class="title-bar" onmousedown="startDrag(event,'win-product')">
+        <span style="font-size:14px;">👕</span><span class="tb-text">상품 관리</span>
+        <button class="title-btn btn-cls" onclick="xpHide('win-product','product')">✕</button>
+      </div>
+      <div class="win-body" style="max-height:480px;">
+        <div class="section">
+          <div class="section-title">⚙️ 주문 상태 변경</div>
+          <div class="form-row"><span class="form-label">주문번호</span><input class="xp-input" id="bulk-order-no" placeholder="XP-XXXXXX"></div>
+          <div class="form-row"><span class="form-label">상태</span>
+            <select class="xp-select" id="bulk-status">
+              <option value="paid">결제완료</option><option value="preparing">제작중</option>
+              <option value="shipping">배송중</option><option value="delivered">배송완료</option><option value="cancelled">취소</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="xp-btn success" onclick="updateOrderStatus()">✅ 상태 업데이트</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="photo-modal" id="photo-modal" onclick="document.getElementById('photo-modal').classList.remove('on')">
+  <button class="photo-modal-close">✕ 닫기</button>
+  <img id="modal-img" src="" alt="">
+</div>
+<div id="admin-notif"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, getDocs, query, where, orderBy, doc, updateDoc, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey:"AIzaSyBeqdSmhSTIItrWNKzHLa0ql4SRMrufHNA",
+  authDomain:"gif-t-c7adc.firebaseapp.com",
+  projectId:"gif-t-c7adc",
+  storageBucket:"gif-t-c7adc.firebasestorage.app",
+  messagingSenderId:"974035174986",
+  appId:"1:974035174986:web:d83159ad4151ad12a408b3"
+};
+
+const ADMIN_EMAIL = 'gif-t@gif-t.net'; // ← 본인 이메일로 변경
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+(function tick(){const d=new Date();const el=document.getElementById('admin-clock');if(el)el.innerHTML=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'<br>'+(d.getMonth()+1)+'월 '+d.getDate()+'일';setTimeout(tick,15000);})();
+
+function notif(msg,ok){const el=document.getElementById('admin-notif');el.textContent=msg;el.style.borderColor=ok?'#27ae60':'#4a9eff';el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',3000);}
+
+// 로그인
+window.checkLogin = async function() {
+  const email=document.getElementById('admin-email').value.trim();
+  const pw=document.getElementById('admin-pw').value;
+  if(!email||!pw){alert('이메일과 비밀번호를 입력해주세요.');return;}
+  try {
+    const cred = await signInWithEmailAndPassword(auth,email,pw);
+    if(cred.user.email !== ADMIN_EMAIL){
+      alert('관리자 계정이 아닙니다.');
+      await auth.signOut(); return;
+    }
+  } catch(e){alert('로그인 실패: '+e.message);}
+}
+
+onAuthStateChanged(auth, user => {
+  if(user && user.email===ADMIN_EMAIL) {
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-desktop').style.display='flex';
+    loadDashboard();
+  }
+});
+
+// 창 관리
+let _z=100, _drag=null;
+window.openWin = function(id){
+  const w=document.getElementById('win-'+id); w.classList.add('on'); xpFocus('win-'+id);
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  const nb=document.getElementById('nav-'+id); if(nb)nb.classList.add('on');
+  const loaders={dashboard:loadDashboard,orders:loadOrders,photos:loadPhotos,inquiries:loadInquiries};
+  if(loaders[id])loaders[id]();
+}
+window.xpHide=function(wid,nid){document.getElementById(wid).classList.remove('on');const nb=document.getElementById('nav-'+nid);if(nb)nb.classList.remove('on');}
+function xpFocus(wid){document.querySelectorAll('.xp-win').forEach(w=>w.classList.remove('focused'));const w=document.getElementById(wid);if(!w)return;w.style.zIndex=++_z;w.classList.add('focused');}
+document.querySelectorAll('.xp-win').forEach(w=>w.addEventListener('mousedown',()=>xpFocus(w.id)));
+window.startDrag=function(e,id){if(e.target.closest('.title-btn'))return;xpFocus(id);const r=document.getElementById(id).getBoundingClientRect();_drag={id,sx:e.clientX,sy:e.clientY,ol:r.left,ot:r.top};document.addEventListener('mousemove',onDrag);document.addEventListener('mouseup',stopDrag);e.preventDefault();}
+function onDrag(e){if(!_drag)return;const w=document.getElementById(_drag.id);w.style.left=Math.max(0,_drag.ol+e.clientX-_drag.sx)+'px';w.style.top=Math.max(0,_drag.ot+e.clientY-_drag.sy)+'px';}
+function stopDrag(){_drag=null;document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',stopDrag);}
+
+const statusMap={paid:'결제완료',preparing:'제작중',shipping:'배송중',delivered:'배송완료',cancelled:'취소됨'};
+const sc={paid:'s-paid',preparing:'s-preparing',shipping:'s-shipping',delivered:'s-delivered',cancelled:'s-cancelled'};
+
+// 대시보드
+async function loadDashboard() {
+  try {
+    const [ordersSnap, usersSnap, inqSnap] = await Promise.all([
+      getDocs(query(collection(db,'orders'),orderBy('createdAt','desc'))),
+      getDocs(collection(db,'users')),
+      getDocs(query(collection(db,'inquiries'),where('isAnswered','==',false)))
+    ]);
+    const orders=ordersSnap.docs.map(d=>d.data());
+    const revenue=orders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.totalPrice,0);
+    document.getElementById('st-orders').textContent=orders.length;
+    document.getElementById('st-revenue').textContent='₩'+Math.floor(revenue/10000)+'만';
+    document.getElementById('st-users').textContent=usersSnap.size;
+    document.getElementById('st-inq').textContent=inqSnap.size;
+    document.getElementById('recent-orders').innerHTML=orders.slice(0,5).map(o=>`
+      <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e8e8e8;font-size:11px;">
+        <span style="font-weight:700;color:#003399;">${o.orderNo}</span>
+        <span>${o.deliveryName||'비회원'}</span>
+        <span class="badge ${sc[o.status]}">${statusMap[o.status]}</span>
+        <span style="font-weight:700;color:#cc0000;">₩${o.totalPrice?.toLocaleString()}</span>
+      </div>`).join('');
+  } catch(e){notif('대시보드 오류: '+e.message);}
+}
+
+// 주문 관리
+async function loadOrders() {
+  try {
+    const snap=await getDocs(query(collection(db,'orders'),orderBy('createdAt','desc')));
+    let orders=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const status=document.getElementById('filter-status').value;
+    const search=document.getElementById('filter-search').value.trim();
+    if(status) orders=orders.filter(o=>o.status===status);
+    if(search) orders=orders.filter(o=>o.orderNo?.includes(search)||o.deliveryName?.includes(search));
+    document.getElementById('orders-count').textContent='총 '+orders.length+'건';
+    document.getElementById('orders-tbody').innerHTML=orders.map(o=>`
+      <tr>
+        <td style="font-weight:700;color:#003399;">${o.orderNo}</td>
+        <td><span class="badge ${sc[o.status]}">${statusMap[o.status]}</span></td>
+        <td>${o.deliveryName||'비회원'}</td>
+        <td>${o.productName} (${o.size}/${o.color}/${o.qty}개)</td>
+        <td style="font-weight:700;color:#cc0000;">₩${o.totalPrice?.toLocaleString()}</td>
+        <td>${o.createdAt?.toDate?.()?.toLocaleDateString('ko-KR')||'-'}</td>
+        <td>
+          <select style="height:20px;font-size:10px;border:1px solid #ccc;" onchange="quickStatus('${o.id}',this.value)">
+            ${['paid','preparing','shipping','delivered','cancelled'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${statusMap[s]}</option>`).join('')}
+          </select>
+        </td>
+      </tr>`).join('');
+  } catch(e){notif('주문 로드 오류: '+e.message);}
+}
+
+window.quickStatus=async function(id,status){
+  try{await updateDoc(doc(db,'orders',id),{status});notif('✅ 상태 변경 완료',true);loadOrders();}
+  catch(e){notif('오류: '+e.message);}
+}
+
+window.updateOrderStatus=async function(){
+  const orderNo=document.getElementById('bulk-order-no').value.trim();
+  const status=document.getElementById('bulk-status').value;
+  if(!orderNo){notif('주문번호를 입력해주세요.');return;}
+  try{
+    const snap=await getDocs(query(collection(db,'orders'),where('orderNo','==',orderNo)));
+    if(snap.empty){notif('주문을 찾을 수 없습니다.');return;}
+    await updateDoc(doc(db,'orders',snap.docs[0].id),{status});
+    notif('✅ '+orderNo+' 상태 변경 완료',true); loadOrders();
+  }catch(e){notif('오류: '+e.message);}
+}
+
+// 사진 확인
+async function loadPhotos() {
+  const el=document.getElementById('photos-body');
+  el.innerHTML='<div style="padding:20px;text-align:center;color:#888;">불러오는 중...</div>';
+  try {
+    const snap=await getDocs(query(collection(db,'orders'),orderBy('createdAt','desc'),limit(20)));
+    const orders=snap.docs.map(d=>d.data()).filter(o=>o.photoUrls?.length>0);
+    if(!orders.length){el.innerHTML='<div style="padding:30px;text-align:center;color:#888;">사진이 있는 주문이 없습니다.</div>';return;}
+    el.innerHTML=orders.map(o=>`
+      <div class="photo-card">
+        <div class="photo-header">
+          <div><strong style="color:#003399;">${o.orderNo}</strong> <span style="font-size:11px;color:#888;">${o.deliveryName||'비회원'} · ${o.size}/${o.color}</span></div>
+          <span style="font-size:11px;color:#888;">${o.photoLayout||''} · ${o.createdAt?.toDate?.()?.toLocaleDateString('ko-KR')||'-'}</span>
+        </div>
+        <div class="photo-grid-view">
+          ${(o.photoUrls||[]).map(url=>`<img class="photo-thumb" src="${url}" onclick="enlargePhoto('${url}')">`).join('')}
+        </div>
+      </div>`).join('');
+  } catch(e){el.innerHTML='<div style="padding:20px;text-align:center;color:#888;">사진을 불러올 수 없습니다.</div>';}
+}
+
+window.enlargePhoto=function(url){document.getElementById('modal-img').src=url;document.getElementById('photo-modal').classList.add('on');}
+
+// 문의 관리
+async function loadInquiries() {
+  const el=document.getElementById('inq-body');
+  el.innerHTML='<div style="padding:20px;text-align:center;color:#888;">불러오는 중...</div>';
+  try {
+    const isAnswered=document.getElementById('filter-inq').value;
+    let q=query(collection(db,'inquiries'),orderBy('createdAt','desc'));
+    if(isAnswered!=='')q=query(collection(db,'inquiries'),where('isAnswered','==',isAnswered==='true'),orderBy('createdAt','desc'));
+    const snap=await getDocs(q);
+    const catMap={general:'일반',order:'주문/결제',delivery:'배송',return:'교환/환불',custom:'커스텀'};
+    el.innerHTML=snap.docs.map(d=>{
+      const q=d.data(); const dt=q.createdAt?.toDate?.()?.toLocaleDateString('ko-KR')||'-';
+      return `<div style="background:white;border-bottom:1px solid #d4d0c8;padding:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <div><span style="font-size:13px;font-weight:700;color:#003399;">${q.title}</span>
+          <span class="badge ${q.isAnswered?'s-answered':'s-waiting'}" style="margin-left:6px;">${q.isAnswered?'답변완료':'답변대기'}</span></div>
+          <span style="font-size:11px;color:#888;">${dt}</span>
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:6px;">${catMap[q.category]||q.category} · ${q.guestName||'회원'} (${q.guestEmail||''})</div>
+        <div style="font-size:12px;background:#f8f8f8;padding:8px;border:1px solid #e8e8e8;margin-bottom:8px;">${q.content}</div>
+        ${q.answer?`<div style="font-size:12px;background:#e8f0fe;border-left:3px solid #316ac5;padding:8px;margin-bottom:8px;"><strong style="color:#316ac5;">관리자 답변:</strong> ${q.answer}</div>`:''}
+        ${!q.isAnswered?`<div style="display:flex;gap:6px;">
+          <textarea id="ans-${d.id}" style="flex:1;height:50px;border:1px solid #7f9db9;font-size:11px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:4px;" placeholder="답변 입력..."></textarea>
+          <button class="xp-btn success" onclick="sendAnswer('${d.id}')">✅ 답변</button>
+        </div>`:''}
+      </div>`;
+    }).join('') || '<div style="padding:20px;text-align:center;color:#888;">문의 내역이 없습니다.</div>';
+  } catch(e){el.innerHTML='<div style="padding:20px;text-align:center;color:#888;">불러올 수 없습니다.</div>';}
+}
+
+window.sendAnswer=async function(id){
+  const answer=document.getElementById('ans-'+id)?.value.trim();
+  if(!answer){notif('답변을 입력해주세요.');return;}
+  try{await updateDoc(doc(db,'inquiries',id),{answer,isAnswered:true,answeredAt:new Date()});notif('✅ 답변 등록 완료',true);loadInquiries();}
+  catch(e){notif('오류: '+e.message);}
+}
+</script>
+</body>
+</html>

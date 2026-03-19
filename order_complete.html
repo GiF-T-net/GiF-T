@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주문 완료 — XP Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nanum Gothic',Tahoma,sans-serif;background:linear-gradient(180deg,#1a6bb5 0%,#3c9a3c 60%,#2d7a2d 100%);min-height:100vh;padding:20px 20px 60px;display:flex;justify-content:center;}
+.xp-win{background:#f0f0ea;border-radius:8px 8px 4px 4px;box-shadow:2px 2px 12px rgba(0,0,0,0.55);width:100%;max-width:440px;height:fit-content;}
+.title-bar{background:linear-gradient(180deg,#3168d5,#1957c2 8%,#1957c2 92%,#3168d5);padding:4px 6px;display:flex;align-items:center;gap:6px;height:30px;border-radius:6px 6px 0 0;}
+.tb-text{flex:1;color:white;font-size:12px;font-weight:700;}
+.win-body{background:#f0f0ea;border:1px solid #aca899;border-top:none;padding:30px 20px;text-align:center;}
+.complete-icon{font-size:72px;display:block;margin-bottom:16px;animation:bounce 1s ease infinite alternate;}
+@keyframes bounce{from{transform:translateY(0);}to{transform:translateY(-8px);}}
+.complete-title{font-size:20px;font-weight:800;color:#003399;margin-bottom:8px;}
+.complete-msg{font-size:13px;color:#555;line-height:1.75;margin-bottom:20px;}
+.order-no-box{display:inline-block;background:#fff0f0;border:2px dashed #cc0000;padding:12px 24px;border-radius:4px;margin-bottom:20px;}
+.order-no-label{font-size:12px;color:#888;margin-bottom:4px;}
+.order-no{font-size:22px;font-weight:800;color:#cc0000;}
+.info-box{background:white;border:1px inset #ccc;padding:12px;text-align:left;margin-bottom:16px;font-size:12px;}
+.info-row{display:flex;gap:8px;margin-bottom:4px;}
+.info-key{font-weight:700;color:#003399;width:70px;flex-shrink:0;}
+.btn-row{display:flex;gap:8px;justify-content:center;}
+.xp-btn{height:32px;padding:0 18px;border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-size:12px;font-weight:700;font-family:'Nanum Gothic',Tahoma,sans-serif;border-radius:2px;color:#333;text-decoration:none;display:inline-flex;align-items:center;}
+.xp-btn.primary{background:linear-gradient(180deg,#5aa0e8,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.xp-btn:hover{filter:brightness(1.05);}
+.xp-taskbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:linear-gradient(180deg,#245edb,#1a52d5 4%,#1a52d5 96%,#0c3699);border-top:2px solid #4a7fe0;display:flex;align-items:center;z-index:9000;padding:0 6px;gap:4px;}
+.start-btn{height:32px;padding:0 14px 0 8px;background:linear-gradient(180deg,#5db55d,#3a9c3a,#2d8a2d);border:1px solid #1a5e1a;border-radius:12px;color:white;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Nanum Gothic',Tahoma,sans-serif;text-decoration:none;}
+.taskbar-right{display:flex;align-items:center;gap:8px;margin-left:auto;background:rgba(0,0,50,0.25);border-left:1px solid rgba(255,255,255,0.15);height:100%;padding:0 10px;}
+.taskbar-icon{color:white;font-size:18px;text-decoration:none;}
+.taskbar-clock{color:white;font-size:11px;text-align:center;min-width:60px;line-height:1.4;}
+</style>
+</head>
+<body>
+<div class="xp-win">
+  <div class="title-bar">
+    <span style="font-size:14px;">✅</span>
+    <span class="tb-text">주문 완료</span>
+  </div>
+  <div class="win-body">
+    <span class="complete-icon">🎉</span>
+    <div class="complete-title">주문이 완료되었습니다!</div>
+    <div class="complete-msg">소중한 주문 감사합니다.<br>사진을 확인 후 정성껏 제작하여<br>5~7일 내 배송해 드리겠습니다.</div>
+    <div class="order-no-box">
+      <div class="order-no-label">주문번호</div>
+      <div class="order-no" id="disp-order-no">-</div>
+    </div>
+    <div class="info-box" id="disp-info"></div>
+    <div class="btn-row">
+      <a class="xp-btn" href="mypage.html">📦 주문 조회</a>
+      <a class="xp-btn primary" href="index.html">🏠 홈으로</a>
+    </div>
+  </div>
+</div>
+
+<div class="xp-taskbar">
+  <a class="start-btn" href="index.html"><span style="font-size:18px;">🪟</span> 시작</a>
+  <div style="width:2px;height:28px;background:linear-gradient(180deg,#0c3699,#4a7fe0,#0c3699);margin:0 4px;"></div>
+  <span style="background:linear-gradient(180deg,#1a3a99,#2a5cc0);border:1px solid #1a3a99;border-radius:3px;color:white;font-size:11px;padding:0 10px;height:28px;display:flex;align-items:center;">✅ 주문완료</span>
+  <div class="taskbar-right">
+    <a href="mypage.html" class="taskbar-icon">👤</a>
+    <div class="taskbar-clock" id="clock"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey:"AIzaSyBeqdSmhSTIItrWNKzHLa0ql4SRMrufHNA",
+  authDomain:"gif-t-c7adc.firebaseapp.com",
+  projectId:"gif-t-c7adc",
+  storageBucket:"gif-t-c7adc.firebasestorage.app",
+  messagingSenderId:"974035174986",
+  appId:"1:974035174986:web:d83159ad4151ad12a408b3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+(function tick(){const d=new Date();const el=document.getElementById('clock');if(el)el.innerHTML=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'<br>'+(d.getMonth()+1)+'/'+d.getDate();setTimeout(tick,15000);})();
+
+const params = new URLSearchParams(location.search);
+const paymentKey = params.get('paymentKey');
+const orderId = params.get('orderId');
+const pending = JSON.parse(localStorage.getItem('xp_pending_order')||'null');
+if(!pending){location.href='index.html';}
+
+document.getElementById('disp-order-no').textContent = pending?.orderNo||'-';
+
+onAuthStateChanged(auth, async user => {
+  if(!pending) return;
+  try {
+    const item = pending.items[0];
+    await addDoc(collection(db,'orders'), {
+      orderNo: pending.orderNo,
+      userId: user?.uid || null,
+      userEmail: user?.email || null,
+      productName: item.name,
+      size: item.size,
+      color: item.color,
+      qty: item.qty,
+      price: item.price,
+      totalPrice: pending.total,
+      photoLayout: item.photoLayout,
+      photoUrls: item.photoData || [],
+      deliveryName: pending.delivery.name,
+      deliveryPhone: pending.delivery.phone,
+      deliveryAddress: pending.delivery.addr,
+      deliveryAddressDetail: pending.delivery.addr2,
+      deliveryZipcode: pending.delivery.zip,
+      deliveryMemo: pending.delivery.memo,
+      paymentKey: paymentKey||'test',
+      paymentMethod: '카드',
+      status: 'paid',
+      createdAt: serverTimestamp()
+    });
+  } catch(e){ console.error('주문 저장 오류:', e); }
+
+  const d = pending.delivery;
+  document.getElementById('disp-info').innerHTML = `
+    <div class="info-row"><span class="info-key">받는 분</span><span>${d.name}</span></div>
+    <div class="info-row"><span class="info-key">연락처</span><span>${d.phone}</span></div>
+    <div class="info-row"><span class="info-key">배송지</span><span>${d.addr} ${d.addr2}</span></div>
+    <div class="info-row"><span class="info-key">결제금액</span><span style="font-weight:800;color:#cc0000;">₩${pending.total.toLocaleString()}</span></div>
+  `;
+  localStorage.removeItem('xp_cart');
+  localStorage.removeItem('xp_pending_order');
+});
+</script>
+</body>
+</html>

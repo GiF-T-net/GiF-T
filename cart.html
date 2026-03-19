@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>장바구니 — XP Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nanum Gothic',Tahoma,sans-serif;background:linear-gradient(180deg,#1a6bb5 0%,#3c9a3c 60%,#2d7a2d 100%);min-height:100vh;padding:20px 20px 60px;display:flex;justify-content:center;}
+.xp-win{background:#f0f0ea;border-radius:8px 8px 4px 4px;box-shadow:2px 2px 12px rgba(0,0,0,0.55);width:100%;max-width:580px;height:fit-content;}
+.title-bar{background:linear-gradient(180deg,#3168d5,#1957c2 8%,#1957c2 92%,#3168d5);padding:4px 6px;display:flex;align-items:center;gap:6px;height:30px;border-radius:6px 6px 0 0;}
+.tb-text{flex:1;color:white;font-size:12px;font-weight:700;}
+.title-btn{width:21px;height:21px;border-radius:3px;border:none;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:white;text-decoration:none;}
+.btn-cls{background:linear-gradient(180deg,#e8605a,#c22a2a);border:1px solid #991a1a;margin-left:2px;}
+.menu-bar{background:#ece9d8;border-bottom:1px solid #aca899;padding:2px 4px;display:flex;gap:2px;font-size:11px;}
+.mi{padding:2px 8px;border-radius:2px;cursor:pointer;color:#222;text-decoration:none;display:inline-block;}
+.mi:hover{background:#316ac5;color:white;}
+.win-body{background:#f0f0ea;border:1px solid #aca899;border-top:none;padding:14px;min-height:200px;}
+.cart-empty{text-align:center;padding:50px 20px;color:#888;}
+.cart-empty .ei{font-size:56px;display:block;margin-bottom:12px;}
+.cart-item{background:white;border:1px solid #ccc;padding:12px;margin-bottom:10px;display:flex;gap:12px;}
+.item-thumb{width:60px;height:70px;background:linear-gradient(135deg,#667eea,#764ba2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.item-info{flex:1;font-size:12px;}
+.item-name{font-weight:800;color:#003399;margin-bottom:4px;}
+.item-detail{color:#666;margin-bottom:2px;}
+.item-price{font-weight:800;color:#cc0000;margin-top:4px;}
+.item-photos{display:flex;gap:3px;margin-top:4px;}
+.item-photo{width:32px;height:32px;object-fit:cover;border:1px solid #ccc;}
+.item-remove{align-self:flex-start;background:none;border:none;color:#cc0000;cursor:pointer;font-size:18px;}
+.qty-ctrl{display:flex;align-items:center;gap:4px;margin-top:6px;}
+.qty-btn{width:22px;height:22px;border:1px solid #aca899;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.qty-val{width:32px;text-align:center;font-size:13px;font-weight:700;border:1px solid #aca899;height:22px;background:white;}
+.cart-total{background:#003399;color:white;padding:12px 14px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;}
+.total-price{font-size:20px;font-weight:800;color:#ffcc00;}
+.xp-btn{height:28px;padding:0 14px;border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-size:12px;font-weight:700;font-family:'Nanum Gothic',Tahoma,sans-serif;border-radius:2px;color:#333;}
+.xp-btn.primary{background:linear-gradient(180deg,#5aa0e8,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.xp-btn.danger{background:linear-gradient(180deg,#e8605a,#c22a2a);color:white;border-color:#991a1a;}
+.xp-btn:hover{filter:brightness(1.05);}
+.xp-btn:active{border-style:inset;}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;padding:10px 14px 12px;border-top:1px solid #aca899;background:#f0f0ea;}
+.xp-taskbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:linear-gradient(180deg,#245edb,#1a52d5 4%,#1a52d5 96%,#0c3699);border-top:2px solid #4a7fe0;display:flex;align-items:center;z-index:9000;padding:0 6px;gap:4px;}
+.start-btn{height:32px;padding:0 14px 0 8px;background:linear-gradient(180deg,#5db55d,#3a9c3a,#2d8a2d);border:1px solid #1a5e1a;border-radius:12px;color:white;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Nanum Gothic',Tahoma,sans-serif;text-decoration:none;}
+.taskbar-right{display:flex;align-items:center;gap:8px;margin-left:auto;background:rgba(0,0,50,0.25);border-left:1px solid rgba(255,255,255,0.15);height:100%;padding:0 10px;}
+.taskbar-icon{color:white;font-size:18px;text-decoration:none;}
+.taskbar-clock{color:white;font-size:11px;text-align:center;min-width:60px;line-height:1.4;}
+</style>
+</head>
+<body>
+<div class="xp-win">
+  <div class="title-bar">
+    <span style="font-size:14px;">🛒</span>
+    <span class="tb-text">장바구니</span>
+    <a class="title-btn btn-cls" href="index.html">✕</a>
+  </div>
+  <div class="menu-bar">
+    <a class="mi" href="index.html">홈(H)</a>
+    <a class="mi" href="product.html">상품(P)</a>
+    <a class="mi" href="mypage.html">마이페이지(M)</a>
+  </div>
+  <div class="win-body" id="cart-body"></div>
+  <div class="btn-row">
+    <button class="xp-btn danger" id="clear-btn" onclick="clearCart()" style="display:none;">🗑️ 비우기</button>
+    <button class="xp-btn" onclick="location.href='product.html'">← 계속 쇼핑</button>
+    <button class="xp-btn primary" id="checkout-btn" onclick="location.href='checkout.html'" style="display:none;">💳 결제하기</button>
+  </div>
+</div>
+
+<div class="xp-taskbar">
+  <a class="start-btn" href="index.html"><span style="font-size:18px;">🪟</span> 시작</a>
+  <div style="width:2px;height:28px;background:linear-gradient(180deg,#0c3699,#4a7fe0,#0c3699);margin:0 4px;"></div>
+  <span style="background:linear-gradient(180deg,#1a3a99,#2a5cc0);border:1px solid #1a3a99;border-radius:3px;color:white;font-size:11px;padding:0 10px;height:28px;display:flex;align-items:center;">🛒 장바구니</span>
+  <div class="taskbar-right">
+    <a href="mypage.html" class="taskbar-icon">👤</a>
+    <div class="taskbar-clock" id="clock"></div>
+  </div>
+</div>
+
+<script>
+(function tick(){const d=new Date();const el=document.getElementById('clock');if(el)el.innerHTML=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'<br>'+(d.getMonth()+1)+'/'+d.getDate();setTimeout(tick,15000);})();
+
+function renderCart(){
+  const items=JSON.parse(localStorage.getItem('xp_cart')||'[]');
+  const body=document.getElementById('cart-body');
+  const clearBtn=document.getElementById('clear-btn');
+  const checkoutBtn=document.getElementById('checkout-btn');
+  if(!items.length){
+    body.innerHTML='<div class="cart-empty"><span class="ei">🛒</span>장바구니가 비어있습니다.<br><br><a href="product.html" style="color:#316ac5;font-weight:700;">👕 커스텀 후드티 보러가기 →</a></div>';
+    clearBtn.style.display='none';checkoutBtn.style.display='none';return;
+  }
+  clearBtn.style.display='inline-flex';checkoutBtn.style.display='inline-flex';
+  let total=0;
+  let html=items.map((item,idx)=>{
+    total+=item.price*item.qty;
+    const thumbs=(item.photoData||[]).slice(0,4).map(d=>`<img class="item-photo" src="${d}">`).join('');
+    return `<div class="cart-item">
+      <div class="item-thumb">👕</div>
+      <div class="item-info">
+        <div class="item-name">${item.name}</div>
+        <div class="item-detail">${item.size} / ${item.color}</div>
+        <div class="item-detail">${item.photoLayout||''}</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${idx},-1)">-</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+        </div>
+        <div class="item-photos">${thumbs}</div>
+        <div class="item-price">₩${(item.price*item.qty).toLocaleString()}</div>
+      </div>
+      <button class="item-remove" onclick="removeItem(${idx})">✕</button>
+    </div>`;
+  }).join('');
+  html+=`<div class="cart-total"><div><div style="font-size:14px;font-weight:700;">총 결제금액</div><div style="font-size:11px;opacity:0.7;">무료배송</div></div><div class="total-price">₩${total.toLocaleString()}</div></div>`;
+  body.innerHTML=html;
+}
+
+function removeItem(idx){const items=JSON.parse(localStorage.getItem('xp_cart')||'[]');items.splice(idx,1);localStorage.setItem('xp_cart',JSON.stringify(items));renderCart();}
+function changeQty(idx,delta){const items=JSON.parse(localStorage.getItem('xp_cart')||'[]');items[idx].qty=Math.max(1,Math.min(10,items[idx].qty+delta));localStorage.setItem('xp_cart',JSON.stringify(items));renderCart();}
+function clearCart(){if(confirm('장바구니를 비우시겠습니까?')){localStorage.removeItem('xp_cart');renderCart();}}
+renderCart();
+</script>
+</body>
+</html>

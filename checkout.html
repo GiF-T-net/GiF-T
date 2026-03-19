@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>결제 — XP Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://js.tosspayments.com/v1/payment"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nanum Gothic',Tahoma,sans-serif;background:linear-gradient(180deg,#1a6bb5 0%,#3c9a3c 60%,#2d7a2d 100%);min-height:100vh;padding:20px 20px 60px;display:flex;justify-content:center;}
+.xp-win{background:#f0f0ea;border-radius:8px 8px 4px 4px;box-shadow:2px 2px 12px rgba(0,0,0,0.55);width:100%;max-width:580px;height:fit-content;}
+.title-bar{background:linear-gradient(180deg,#3168d5,#1957c2 8%,#1957c2 92%,#3168d5);padding:4px 6px;display:flex;align-items:center;gap:6px;height:30px;border-radius:6px 6px 0 0;}
+.tb-text{flex:1;color:white;font-size:12px;font-weight:700;}
+.title-btn{width:21px;height:21px;border-radius:3px;border:none;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:white;text-decoration:none;}
+.btn-cls{background:linear-gradient(180deg,#e8605a,#c22a2a);border:1px solid #991a1a;margin-left:2px;}
+.menu-bar{background:#ece9d8;border-bottom:1px solid #aca899;padding:2px 4px;display:flex;gap:2px;font-size:11px;}
+.mi{padding:2px 8px;border-radius:2px;cursor:pointer;color:#222;text-decoration:none;display:inline-block;}
+.mi:hover{background:#316ac5;color:white;}
+.win-body{background:#f0f0ea;border:1px solid #aca899;border-top:none;padding:14px;}
+.section{background:white;border:1px inset #ccc;padding:12px;margin-bottom:12px;}
+.section-title{font-size:13px;font-weight:800;color:#003399;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #d4d0c8;}
+.form-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+.form-label{font-size:12px;font-weight:700;color:#333;width:76px;flex-shrink:0;}
+.xp-input{height:24px;border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 6px;flex:1;}
+.xp-select{height:24px;border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 4px;flex:1;}
+.order-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #f0ede8;}
+.order-thumb{width:48px;height:56px;background:linear-gradient(135deg,#667eea,#764ba2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.order-info{flex:1;font-size:12px;}
+.order-name{font-weight:800;color:#003399;margin-bottom:2px;}
+.order-detail{color:#666;margin-bottom:2px;}
+.order-price{font-weight:800;color:#cc0000;}
+.order-photos{display:flex;gap:2px;margin-top:3px;}
+.order-photo{width:26px;height:26px;object-fit:cover;border:1px solid #ccc;}
+.pay-methods{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+.pay-method{border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);padding:8px 4px;text-align:center;cursor:pointer;font-size:11px;font-weight:700;border-radius:2px;}
+.pay-method.on{background:linear-gradient(180deg,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.pay-method .pm-icon{font-size:18px;display:block;margin-bottom:3px;}
+.total-box{background:#003399;color:white;padding:12px 14px;margin-top:12px;}
+.total-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
+.total-row.final{font-size:18px;font-weight:800;border-top:1px solid rgba(255,255,255,0.3);padding-top:8px;margin-top:8px;}
+.total-row.final .tv{color:#ffcc00;}
+.agree-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:10px;}
+.xp-btn{height:28px;padding:0 14px;border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-size:12px;font-weight:700;font-family:'Nanum Gothic',Tahoma,sans-serif;border-radius:2px;color:#333;}
+.xp-btn.primary{background:linear-gradient(180deg,#5aa0e8,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.xp-btn.big{height:38px;font-size:14px;padding:0 20px;}
+.xp-btn:hover{filter:brightness(1.05);}
+.xp-btn:active{border-style:inset;}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;padding:10px 0 0;border-top:1px solid #aca899;margin-top:4px;}
+.xp-taskbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:linear-gradient(180deg,#245edb,#1a52d5 4%,#1a52d5 96%,#0c3699);border-top:2px solid #4a7fe0;display:flex;align-items:center;z-index:9000;padding:0 6px;gap:4px;}
+.start-btn{height:32px;padding:0 14px 0 8px;background:linear-gradient(180deg,#5db55d,#3a9c3a,#2d8a2d);border:1px solid #1a5e1a;border-radius:12px;color:white;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Nanum Gothic',Tahoma,sans-serif;text-decoration:none;}
+.taskbar-right{display:flex;align-items:center;gap:8px;margin-left:auto;background:rgba(0,0,50,0.25);border-left:1px solid rgba(255,255,255,0.15);height:100%;padding:0 10px;}
+.taskbar-icon{color:white;font-size:18px;text-decoration:none;}
+.taskbar-clock{color:white;font-size:11px;text-align:center;min-width:60px;line-height:1.4;}
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99999;display:none;align-items:center;justify-content:center;}
+.loading-overlay.on{display:flex;}
+.loading-box{background:#f0f0ea;border-radius:8px;padding:30px 40px;text-align:center;border:2px solid #316ac5;}
+</style>
+</head>
+<body>
+
+<div class="xp-win">
+  <div class="title-bar">
+    <span style="font-size:14px;">💳</span>
+    <span class="tb-text">결제하기</span>
+    <a class="title-btn btn-cls" href="cart.html">✕</a>
+  </div>
+  <div class="menu-bar">
+    <a class="mi" href="index.html">홈(H)</a>
+    <a class="mi" href="cart.html">← 장바구니로</a>
+  </div>
+  <div class="win-body">
+
+    <div class="section">
+      <div class="section-title">🛒 주문 상품</div>
+      <div id="order-items"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📦 배송 정보</div>
+      <div class="form-row"><span class="form-label">받는 분</span><input class="xp-input" id="d-name" placeholder="이름"></div>
+      <div class="form-row"><span class="form-label">전화번호</span><input class="xp-input" id="d-phone" placeholder="010-0000-0000"></div>
+      <div style="display:flex;gap:6px;margin-bottom:6px;">
+        <input class="xp-input" id="d-zip" placeholder="우편번호" style="width:100px;flex:none;" readonly>
+        <button class="xp-btn" onclick="searchAddr()">📮 주소 검색</button>
+      </div>
+      <div style="margin-bottom:6px;"><input class="xp-input" id="d-addr" placeholder="기본 주소" readonly style="width:100%;"></div>
+      <div class="form-row"><input class="xp-input" id="d-addr2" placeholder="상세 주소"></div>
+      <div class="form-row"><span class="form-label">배송 메모</span>
+        <select class="xp-select" id="d-memo">
+          <option value="">선택하세요</option>
+          <option>문 앞에 놓아주세요</option>
+          <option>경비실에 맡겨주세요</option>
+          <option>부재 시 연락 바랍니다</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💳 결제 수단</div>
+      <div class="pay-methods">
+        <div class="pay-method on" onclick="selPay(this,'카드')"><span class="pm-icon">💳</span>신용/체크카드</div>
+        <div class="pay-method" onclick="selPay(this,'가상계좌')"><span class="pm-icon">🏦</span>가상계좌</div>
+        <div class="pay-method" onclick="selPay(this,'토스페이')"><span class="pm-icon">💙</span>토스페이</div>
+        <div class="pay-method" onclick="selPay(this,'카카오페이')"><span class="pm-icon">💛</span>카카오페이</div>
+        <div class="pay-method" onclick="selPay(this,'네이버페이')"><span class="pm-icon">💚</span>네이버페이</div>
+        <div class="pay-method" onclick="selPay(this,'계좌이체')"><span class="pm-icon">🏧</span>계좌이체</div>
+      </div>
+    </div>
+
+    <div class="total-box">
+      <div class="total-row"><span>상품금액</span><span id="sum-price">₩0</span></div>
+      <div class="total-row"><span>배송비</span><span>무료</span></div>
+      <div class="total-row final"><span>최종 결제금액</span><span class="tv" id="sum-total">₩0</span></div>
+    </div>
+
+    <div class="agree-row">
+      <input type="checkbox" id="agree" style="width:14px;height:14px;">
+      <label for="agree">주문 내용을 확인하였으며 결제에 동의합니다.</label>
+    </div>
+
+    <div class="btn-row">
+      <button class="xp-btn" onclick="location.href='cart.html'">← 장바구니로</button>
+      <button class="xp-btn primary big" onclick="doPayment()">💳 결제하기</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="loading-box">
+    <div style="font-size:36px;margin-bottom:10px;">⚙️</div>
+    <div style="font-size:14px;font-weight:800;">결제 처리 중...</div>
+    <div style="font-size:12px;color:#666;margin-top:4px;">잠시만 기다려주세요</div>
+  </div>
+</div>
+
+<div class="xp-taskbar">
+  <a class="start-btn" href="index.html"><span style="font-size:18px;">🪟</span> 시작</a>
+  <div style="width:2px;height:28px;background:linear-gradient(180deg,#0c3699,#4a7fe0,#0c3699);margin:0 4px;"></div>
+  <span style="background:linear-gradient(180deg,#1a3a99,#2a5cc0);border:1px solid #1a3a99;border-radius:3px;color:white;font-size:11px;padding:0 10px;height:28px;display:flex;align-items:center;">💳 결제하기</span>
+  <div class="taskbar-right">
+    <a href="cart.html" class="taskbar-icon">🛒</a>
+    <div class="taskbar-clock" id="clock"></div>
+  </div>
+</div>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+(function tick(){const d=new Date();const el=document.getElementById('clock');if(el)el.innerHTML=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'<br>'+(d.getMonth()+1)+'/'+d.getDate();setTimeout(tick,15000);})();
+
+const TOSS_CLIENT_KEY = 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq';
+let selectedPay = '카드';
+
+function selPay(el, method) {
+  document.querySelectorAll('.pay-method').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on'); selectedPay = method;
+}
+
+function searchAddr() {
+  new daum.Postcode({
+    oncomplete: function(data) {
+      document.getElementById('d-zip').value = data.zonecode;
+      document.getElementById('d-addr').value = data.roadAddress||data.jibunAddress;
+      document.getElementById('d-addr2').focus();
+    }
+  }).open();
+}
+
+function renderItems() {
+  const items = JSON.parse(localStorage.getItem('xp_cart')||'[]');
+  if(!items.length){location.href='cart.html';return;}
+  let total = 0;
+  document.getElementById('order-items').innerHTML = items.map(item=>{
+    total += item.price * item.qty;
+    const thumbs = (item.photoData||[]).slice(0,3).map(d=>`<img class="order-photo" src="${d}">`).join('');
+    return `<div class="order-item">
+      <div class="order-thumb">👕</div>
+      <div class="order-info">
+        <div class="order-name">${item.name}</div>
+        <div class="order-detail">${item.size} / ${item.color} / ${item.qty}개 · ${item.photoLayout||''}</div>
+        <div class="order-photos">${thumbs}</div>
+        <div class="order-price">₩${(item.price*item.qty).toLocaleString()}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('sum-price').textContent = '₩'+total.toLocaleString();
+  document.getElementById('sum-total').textContent = '₩'+total.toLocaleString();
+}
+
+async function doPayment() {
+  const name = document.getElementById('d-name').value.trim();
+  const phone = document.getElementById('d-phone').value.trim();
+  const addr = document.getElementById('d-addr').value.trim();
+  const addr2 = document.getElementById('d-addr2').value.trim();
+  const zip = document.getElementById('d-zip').value.trim();
+  const agree = document.getElementById('agree').checked;
+  if(!name){alert('받는 분 이름을 입력해주세요.');return;}
+  if(!phone){alert('전화번호를 입력해주세요.');return;}
+  if(!addr){alert('배송 주소를 검색해주세요.');return;}
+  if(!agree){alert('결제 동의를 체크해주세요.');return;}
+
+  const items = JSON.parse(localStorage.getItem('xp_cart')||'[]');
+  const total = items.reduce((s,i)=>s+i.price*i.qty,0);
+  const orderNo = 'XP-'+Date.now().toString(36).toUpperCase();
+
+  localStorage.setItem('xp_pending_order', JSON.stringify({
+    orderNo, items, total,
+    delivery:{name,phone,zip,addr,addr2,memo:document.getElementById('d-memo').value}
+  }));
+
+  document.getElementById('loading').classList.add('on');
+  try {
+    const toss = TossPayments(TOSS_CLIENT_KEY);
+    await toss.requestPayment(selectedPay, {
+      amount: total,
+      orderId: orderNo,
+      orderName: items.length===1 ? items[0].name : items[0].name+' 외 '+(items.length-1)+'건',
+      customerName: name,
+      customerMobilePhone: phone.replace(/-/g,''),
+      successUrl: window.location.origin+'/order_complete.html',
+      failUrl: window.location.origin+'/checkout.html',
+    });
+  } catch(e) {
+    document.getElementById('loading').classList.remove('on');
+    if(e.code!=='USER_CANCEL') alert('결제 오류: '+e.message);
+  }
+}
+
+renderItems();
+</script>
+</body>
+</html>

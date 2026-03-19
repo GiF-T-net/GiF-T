@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>커스텀 후드티 — XP Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nanum Gothic',Tahoma,sans-serif;background:linear-gradient(180deg,#1a6bb5 0%,#3c9a3c 60%,#2d7a2d 100%);min-height:100vh;padding:20px 20px 60px;display:flex;justify-content:center;}
+.xp-win{background:#f0f0ea;border-radius:8px 8px 4px 4px;box-shadow:2px 2px 12px rgba(0,0,0,0.55);width:100%;max-width:640px;height:fit-content;}
+.title-bar{background:linear-gradient(180deg,#3168d5,#1957c2 8%,#1957c2 92%,#3168d5);padding:4px 6px;display:flex;align-items:center;gap:6px;height:30px;border-radius:6px 6px 0 0;}
+.tb-text{flex:1;color:white;font-size:12px;font-weight:700;text-shadow:1px 1px 2px rgba(0,0,0,0.5);}
+.title-btn{width:21px;height:21px;border-radius:3px;border:none;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:white;text-decoration:none;}
+.btn-cls{background:linear-gradient(180deg,#e8605a,#c22a2a);border:1px solid #991a1a;margin-left:2px;}
+.title-btn:hover{filter:brightness(1.2);}
+.menu-bar{background:#ece9d8;border-bottom:1px solid #aca899;padding:2px 4px;display:flex;gap:2px;font-size:11px;}
+.mi{padding:2px 8px;border-radius:2px;cursor:pointer;color:#222;text-decoration:none;display:inline-block;}
+.mi:hover{background:#316ac5;color:white;}
+.win-body{background:#f0f0ea;border:1px solid #aca899;border-top:none;padding:16px;}
+.product-top{display:flex;gap:16px;margin-bottom:16px;}
+.product-img{width:210px;height:250px;background:linear-gradient(135deg,#667eea,#764ba2);border:2px inset #888;flex-shrink:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;font-size:60px;}
+.product-img .lbl{font-size:11px;color:rgba(255,255,255,0.85);font-weight:700;}
+.product-info{flex:1;}
+.product-title{font-size:16px;font-weight:800;color:#003399;border-bottom:2px solid #003399;padding-bottom:6px;margin-bottom:10px;}
+.product-price{font-size:24px;font-weight:800;color:#cc0000;margin-bottom:4px;}
+.product-price small{font-size:13px;color:#888;text-decoration:line-through;font-weight:400;margin-right:6px;}
+.discount-badge{font-size:11px;background:#cc0000;color:white;padding:2px 6px;border-radius:2px;}
+.product-desc{font-size:12px;color:#333;line-height:1.75;background:white;border:1px inset #ccc;padding:8px;margin:10px 0;}
+.option-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.option-label{font-size:12px;font-weight:700;width:50px;flex-shrink:0;color:#333;}
+.xp-select{height:24px;border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 4px;flex:1;}
+.photo-section{background:white;border:2px inset #ccc;padding:12px;margin-bottom:14px;}
+.section-title{font-size:13px;font-weight:800;color:#003399;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.count-selector{display:flex;gap:6px;margin-bottom:12px;}
+.count-btn{flex:1;height:40px;border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-size:11px;font-weight:700;font-family:'Nanum Gothic',Tahoma,sans-serif;border-radius:2px;color:#333;line-height:1.3;}
+.count-btn.on{background:linear-gradient(180deg,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.count-btn:active{border-style:inset;}
+.photo-grid{display:grid;gap:6px;margin-bottom:10px;}
+.photo-grid.g1{grid-template-columns:1fr;}
+.photo-grid.g4{grid-template-columns:1fr 1fr;}
+.photo-grid.g9{grid-template-columns:1fr 1fr 1fr;}
+.photo-slot{background:#f5f5f5;border:2px dashed #aca899;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:4px;position:relative;overflow:hidden;}
+.photo-grid.g1 .photo-slot{height:200px;}
+.photo-grid.g4 .photo-slot{height:110px;}
+.photo-grid.g9 .photo-slot{height:80px;}
+.photo-slot:hover{background:#e8eaf6;border-color:#316ac5;}
+.slot-icon{font-size:24px;color:#aca899;}
+.photo-grid.g4 .slot-icon,.photo-grid.g9 .slot-icon{font-size:16px;}
+.slot-text{font-size:10px;color:#888;}
+.photo-grid.g9 .slot-text{display:none;}
+.photo-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.remove-btn{position:absolute;top:2px;right:2px;width:18px;height:18px;background:rgba(180,0,0,0.85);color:white;border:none;border-radius:2px;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:5;}
+.photo-slot:hover .remove-btn{display:flex;}
+.photo-note{font-size:11px;color:#555;background:#fffde7;border:1px solid #f0c040;padding:6px 8px;border-radius:2px;}
+.xp-btn{height:28px;padding:0 14px;border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-size:12px;font-weight:700;font-family:'Nanum Gothic',Tahoma,sans-serif;border-radius:2px;color:#333;}
+.xp-btn.primary{background:linear-gradient(180deg,#5aa0e8,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.xp-btn:hover{filter:brightness(1.05);}
+.xp-btn:active{border-style:inset;}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;padding:10px 0 0;border-top:1px solid #aca899;margin-top:4px;}
+.status-bar{background:#f0f0ea;border-top:1px solid #aca899;padding:2px 8px;font-size:11px;color:#444;display:flex;gap:6px;}
+.xp-taskbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:linear-gradient(180deg,#245edb,#1a52d5 4%,#1a52d5 96%,#0c3699);border-top:2px solid #4a7fe0;display:flex;align-items:center;z-index:9000;padding:0 6px;gap:4px;}
+.start-btn{height:32px;padding:0 14px 0 8px;background:linear-gradient(180deg,#5db55d,#3a9c3a,#2d8a2d);border:1px solid #1a5e1a;border-radius:12px;color:white;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Nanum Gothic',Tahoma,sans-serif;text-decoration:none;}
+.taskbar-right{display:flex;align-items:center;gap:8px;margin-left:auto;background:rgba(0,0,50,0.25);border-left:1px solid rgba(255,255,255,0.15);height:100%;padding:0 10px;}
+.taskbar-icon{color:white;font-size:18px;text-decoration:none;position:relative;}
+.cart-badge{position:absolute;top:-4px;right:-6px;background:#ff3b3b;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;}
+.taskbar-clock{color:white;font-size:11px;text-align:center;min-width:60px;line-height:1.4;}
+.xp-dialog{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:99999;display:none;align-items:center;justify-content:center;}
+.xp-dialog.on{display:flex;}
+.dlg-box{background:#f0f0ea;border:2px solid #316ac5;border-radius:8px 8px 4px 4px;min-width:280px;box-shadow:4px 4px 14px rgba(0,0,0,0.5);overflow:hidden;}
+.dlg-title{background:linear-gradient(180deg,#3168d5,#1957c2);padding:5px 10px;color:white;font-size:12px;font-weight:700;}
+.dlg-body{padding:18px;display:flex;gap:14px;align-items:flex-start;}
+.dlg-icon{font-size:30px;}
+.dlg-text{font-size:12px;line-height:1.75;color:#222;}
+.dlg-btns{display:flex;gap:8px;justify-content:flex-end;padding:8px 14px 12px;}
+#xp-notif{position:fixed;bottom:46px;right:4px;background:#ffffe1;border:1px solid #808000;padding:8px 14px;font-size:12px;z-index:99999;max-width:240px;box-shadow:2px 2px 6px rgba(0,0,0,0.3);border-radius:2px;display:none;}
+</style>
+</head>
+<body>
+<div class="xp-win">
+  <div class="title-bar">
+    <span style="font-size:14px;">👕</span>
+    <span class="tb-text">커스텀 후드티 — 상품 상세</span>
+    <a class="title-btn btn-cls" href="index.html">✕</a>
+  </div>
+  <div class="menu-bar">
+    <a class="mi" href="index.html">홈(H)</a>
+    <a class="mi" href="cart.html">장바구니(B)</a>
+    <a class="mi" href="mypage.html">마이페이지(M)</a>
+    <a class="mi" href="inquiry.html">문의(Q)</a>
+  </div>
+  <div class="win-body">
+    <div class="product-top">
+      <div class="product-img"><span>👕</span><span class="lbl">CUSTOM HOODIE</span></div>
+      <div class="product-info">
+        <div class="product-title">✨ 나만의 커스텀 후드티</div>
+        <div class="product-price"><small>₩59,000</small>₩39,900 <span class="discount-badge">32% 할인</span></div>
+        <div class="product-desc">
+          고객님이 직접 업로드한 사진으로 제작하는<br>세상에 하나뿐인 커스텀 후드티입니다.<br><br>
+          • 소재: 380g 프리미엄 면 혼방<br>• 인쇄: DTF 고품질 풀컬러 인쇄<br>
+          • 제작기간: 주문 후 5~7일<br>• 배송: 전국 무료배송
+        </div>
+        <div class="option-row"><span class="option-label">사이즈</span>
+          <select class="xp-select" id="opt-size">
+            <option value="">-- 선택 --</option>
+            <option>S (95)</option><option>M (100)</option><option>L (105)</option><option>XL (110)</option><option>2XL (115)</option>
+          </select>
+        </div>
+        <div class="option-row"><span class="option-label">색상</span>
+          <select class="xp-select" id="opt-color">
+            <option value="">-- 선택 --</option>
+            <option>⬜ 화이트</option><option>⬛ 블랙</option><option>🟫 그레이</option><option>🟦 네이비</option>
+          </select>
+        </div>
+        <div class="option-row"><span class="option-label">수량</span>
+          <input type="number" class="xp-select" id="opt-qty" value="1" min="1" max="10" style="width:60px;flex:none;text-align:center;">
+        </div>
+      </div>
+    </div>
+    <div class="photo-section">
+      <div class="section-title">📷 사진 업로드 <span style="font-size:11px;color:#888;font-weight:400;">(레이아웃 선택)</span></div>
+      <div class="count-selector">
+        <button class="count-btn on" onclick="setCount(1,this)">📸 1장<br><small>단독</small></button>
+        <button class="count-btn" onclick="setCount(4,this)">🔲 4장<br><small>2×2</small></button>
+        <button class="count-btn" onclick="setCount(9,this)">⊞ 9장<br><small>3×3</small></button>
+      </div>
+      <div class="photo-grid g1" id="photo-grid"></div>
+      <div class="photo-note">💡 고화질 JPG·PNG 권장 (최대 10MB/장)</div>
+    </div>
+    <div class="btn-row">
+      <button class="xp-btn" onclick="location.href='index.html'">← 뒤로</button>
+      <button class="xp-btn" onclick="addCart()">🛒 장바구니</button>
+      <button class="xp-btn primary" onclick="buyNow()">⚡ 바로 구매</button>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span>👕 커스텀 후드티</span><span>|</span><span>₩39,900</span><span>|</span>
+    <span id="photo-status">사진 0장 선택됨</span>
+  </div>
+</div>
+
+<div class="xp-dialog" id="dlg">
+  <div class="dlg-box">
+    <div class="dlg-title">⚠️ 확인 필요</div>
+    <div class="dlg-body"><span class="dlg-icon">⚠️</span><span class="dlg-text" id="dlg-msg"></span></div>
+    <div class="dlg-btns"><button class="xp-btn primary" onclick="document.getElementById('dlg').classList.remove('on')">확인</button></div>
+  </div>
+</div>
+<div id="xp-notif"></div>
+
+<div class="xp-taskbar">
+  <a class="start-btn" href="index.html"><span style="font-size:18px;">🪟</span> 시작</a>
+  <div style="width:2px;height:28px;background:linear-gradient(180deg,#0c3699,#4a7fe0,#0c3699);margin:0 4px;"></div>
+  <span style="background:linear-gradient(180deg,#1a3a99,#2a5cc0);border:1px solid #1a3a99;border-radius:3px;color:white;font-size:11px;padding:0 10px;height:28px;display:flex;align-items:center;">👕 커스텀 후드티</span>
+  <div class="taskbar-right">
+    <a href="cart.html" class="taskbar-icon">🛒<span class="cart-badge" id="cart-badge"></span></a>
+    <a href="mypage.html" class="taskbar-icon">👤</a>
+    <div class="taskbar-clock" id="clock"></div>
+  </div>
+</div>
+
+<script>
+(function tick(){const d=new Date();const el=document.getElementById('clock');if(el)el.innerHTML=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'<br>'+(d.getMonth()+1)+'/'+d.getDate();setTimeout(tick,15000);})();
+const c=JSON.parse(localStorage.getItem('xp_cart')||'[]');if(c.length){const b=document.getElementById('cart-badge');b.textContent=c.length;b.style.display='flex';}
+
+let photoCount=1,photoData={},photoFiles={};
+function setCount(n,btn){photoCount=n;photoData={};photoFiles={};document.querySelectorAll('.count-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderGrid();updateStatus();}
+function renderGrid(){const g=document.getElementById('photo-grid');g.className='photo-grid g'+photoCount;g.innerHTML='';for(let i=0;i<photoCount;i++){const s=document.createElement('div');s.className='photo-slot';s.innerHTML=`<span class="slot-icon">📷</span><span class="slot-text">클릭하여 업로드</span><button class="remove-btn" onclick="removePhoto(${i},event)">✕</button>`;if(photoData[i]){const img=document.createElement('img');img.src=photoData[i];s.appendChild(img);}s.addEventListener('click',e=>{if(e.target.classList.contains('remove-btn'))return;pickPhoto(i);});g.appendChild(s);}}
+function pickPhoto(idx){const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>10*1024*1024){showNotif('⚠️ 10MB 이하만 가능합니다.');return;}photoFiles[idx]=f;const fr=new FileReader();fr.onload=ev=>{photoData[idx]=ev.target.result;renderGrid();updateStatus();};fr.readAsDataURL(f);};inp.click();}
+function removePhoto(idx,e){e.stopPropagation();delete photoData[idx];delete photoFiles[idx];renderGrid();updateStatus();}
+function updateStatus(){const cnt=Object.keys(photoData).length;document.getElementById('photo-status').textContent=`사진 ${cnt}장 선택됨 (${photoCount}장 레이아웃)`;}
+function showDlg(msg){document.getElementById('dlg-msg').innerHTML=msg;document.getElementById('dlg').classList.add('on');}
+function showNotif(msg){const el=document.getElementById('xp-notif');el.textContent=msg;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',3000);}
+function validate(){if(!document.getElementById('opt-size').value){showDlg('사이즈를 선택해주세요.');return false;}if(!document.getElementById('opt-color').value){showDlg('색상을 선택해주세요.');return false;}if(Object.keys(photoData).length===0){showDlg('사진을 최소 1장 업로드해주세요.');return false;}return true;}
+function addCart(){if(!validate())return;const items=JSON.parse(localStorage.getItem('xp_cart')||'[]');items.push({id:Date.now(),name:'커스텀 후드티',size:document.getElementById('opt-size').value,color:document.getElementById('opt-color').value,qty:parseInt(document.getElementById('opt-qty').value),price:39900,photoCount,photoLayout:photoCount+'장 레이아웃',photoData:Object.values(photoData),photoFileNames:Object.values(photoFiles).map(f=>f.name)});localStorage.setItem('xp_cart',JSON.stringify(items));showNotif('🛒 장바구니에 담겼습니다!');}
+function buyNow(){if(!validate())return;addCart();location.href='checkout.html';}
+renderGrid();updateStatus();
+</script>
+</body>
+</html>

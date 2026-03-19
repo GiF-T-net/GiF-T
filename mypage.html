@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마이페이지 — XP Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nanum Gothic',Tahoma,sans-serif;background:linear-gradient(180deg,#1a6bb5 0%,#3c9a3c 60%,#2d7a2d 100%);min-height:100vh;padding:20px 20px 60px;display:flex;justify-content:center;}
+.xp-win{background:#f0f0ea;border-radius:8px 8px 4px 4px;box-shadow:2px 2px 12px rgba(0,0,0,0.55);width:100%;max-width:500px;height:fit-content;}
+.title-bar{background:linear-gradient(180deg,#3168d5,#1957c2 8%,#1957c2 92%,#3168d5);padding:4px 6px;display:flex;align-items:center;gap:6px;height:30px;border-radius:6px 6px 0 0;}
+.tb-text{flex:1;color:white;font-size:12px;font-weight:700;text-shadow:1px 1px 2px rgba(0,0,0,0.5);}
+.title-btn{width:21px;height:21px;border-radius:3px;border:none;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:white;text-decoration:none;}
+.btn-cls{background:linear-gradient(180deg,#e8605a,#c22a2a);border:1px solid #991a1a;margin-left:2px;}
+.title-btn:hover{filter:brightness(1.2);}
+.menu-bar{background:#ece9d8;border-bottom:1px solid #aca899;padding:2px 4px;display:flex;gap:2px;font-size:11px;}
+.mi{padding:2px 8px;border-radius:2px;cursor:pointer;color:#222;text-decoration:none;display:inline-block;}
+.mi:hover{background:#316ac5;color:white;}
+.win-body{background:#f0f0ea;border:1px solid #aca899;border-top:none;padding:14px;}
+.tabs{display:flex;gap:0;margin-bottom:14px;border-bottom:2px solid #316ac5;}
+.tab{padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;color:#555;border:1px solid #aca899;border-bottom:none;background:linear-gradient(180deg,#ece9d8,#d4d0c8);border-radius:4px 4px 0 0;margin-right:2px;}
+.tab.on{background:#316ac5;color:white;border-color:#1a3a99;}
+.tab-content{display:none;}
+.tab-content.on{display:block;}
+.login-box{background:white;border:1px inset #ccc;padding:20px;margin-bottom:12px;}
+.login-title{font-size:14px;font-weight:800;color:#003399;margin-bottom:14px;text-align:center;}
+.form-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+.form-label{font-size:12px;font-weight:700;color:#333;width:70px;flex-shrink:0;}
+.xp-input{height:24px;border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 6px;flex:1;}
+.xp-input:focus{outline:2px solid #316ac5;}
+/* 로그인된 상태 */
+.user-card{background:white;border:1px inset #ccc;padding:20px;text-align:center;margin-bottom:12px;}
+.user-avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;}
+.user-name{font-size:15px;font-weight:800;color:#003399;margin-bottom:4px;}
+.user-email{font-size:12px;color:#888;}
+/* 주문 목록 */
+.order-card{background:white;border:1px solid #ccc;padding:12px;margin-bottom:8px;}
+.order-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #f0ede8;}
+.order-no{font-size:11px;color:#888;}
+.order-body{display:flex;gap:10px;}
+.order-thumb{width:50px;height:58px;background:linear-gradient(135deg,#667eea,#764ba2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.order-info{flex:1;font-size:12px;}
+.order-name{font-weight:800;color:#003399;margin-bottom:3px;}
+.order-detail{color:#666;margin-bottom:2px;}
+.order-price{font-weight:800;color:#cc0000;margin-top:4px;}
+.order-photos{display:flex;gap:2px;margin-top:4px;}
+.order-photo{width:28px;height:28px;object-fit:cover;border:1px solid #ccc;}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:2px;}
+.s-paid{background:#316ac5;color:white;}
+.s-preparing{background:#e67e22;color:white;}
+.s-shipping{background:#27ae60;color:white;}
+.s-delivered{background:#2c3e50;color:white;}
+.s-cancelled{background:#c0392b;color:white;}
+/* 에러 메시지 */
+.error-msg{background:#fff0f0;border:1px solid #ffaaaa;padding:8px 10px;font-size:12px;color:#cc0000;border-radius:2px;margin-bottom:8px;display:none;}
+.error-msg.on{display:block;}
+.xp-btn{height:28px;padding:0 14px;border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-size:12px;font-weight:700;font-family:'Nanum Gothic',Tahoma,sans-serif;border-radius:2px;color:#333;}
+.xp-btn.primary{background:linear-gradient(180deg,#5aa0e8,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.xp-btn.danger{background:linear-gradient(180deg,#e8605a,#c22a2a);color:white;border-color:#991a1a;}
+.xp-btn:hover{filter:brightness(1.05);}
+.xp-btn:active{border-style:inset;}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;padding:10px 0 0;border-top:1px solid #aca899;margin-top:8px;}
+.empty-msg{text-align:center;padding:30px;color:#888;font-size:13px;}
+.loading-msg{text-align:center;padding:20px;color:#888;font-size:12px;}
+.xp-taskbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:linear-gradient(180deg,#245edb,#1a52d5 4%,#1a52d5 96%,#0c3699);border-top:2px solid #4a7fe0;display:flex;align-items:center;z-index:9000;padding:0 6px;gap:4px;}
+.start-btn{height:32px;padding:0 14px 0 8px;background:linear-gradient(180deg,#5db55d,#3a9c3a,#2d8a2d);border:1px solid #1a5e1a;border-radius:12px;color:white;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Nanum Gothic',Tahoma,sans-serif;text-decoration:none;}
+.taskbar-right{display:flex;align-items:center;gap:8px;margin-left:auto;background:rgba(0,0,50,0.25);border-left:1px solid rgba(255,255,255,0.15);height:100%;padding:0 10px;}
+.taskbar-icon{color:white;font-size:18px;text-decoration:none;position:relative;}
+.cart-badge{position:absolute;top:-4px;right:-6px;background:#ff3b3b;color:white;font-size:9px;font-weight:800;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;}
+.taskbar-clock{color:white;font-size:11px;text-align:center;min-width:60px;line-height:1.4;}
+#xp-notif{position:fixed;bottom:46px;right:4px;background:#ffffe1;border:1px solid #808000;padding:8px 14px;font-size:12px;z-index:99999;max-width:240px;box-shadow:2px 2px 6px rgba(0,0,0,0.3);border-radius:2px;display:none;}
+.pw-reset-link{font-size:11px;color:#316ac5;cursor:pointer;text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="xp-win">
+  <div class="title-bar">
+    <span style="font-size:14px;">👤</span>
+    <span class="tb-text">마이페이지</span>
+    <a class="title-btn btn-cls" href="index.html">✕</a>
+  </div>
+  <div class="menu-bar">
+    <a class="mi" href="index.html">홈(H)</a>
+    <a class="mi" href="product.html">상품(P)</a>
+    <a class="mi" href="cart.html">장바구니(B)</a>
+    <a class="mi" href="inquiry.html">문의(Q)</a>
+  </div>
+  <div class="win-body">
+    <div class="tabs">
+      <div class="tab on" onclick="switchTab('account')" id="tab-btn-account">👤 계정</div>
+      <div class="tab" onclick="switchTab('orders')" id="tab-btn-orders">📦 주문내역</div>
+    </div>
+
+    <!-- 계정 탭 -->
+    <div class="tab-content on" id="tab-account">
+
+      <!-- 로그인 폼 -->
+      <div id="section-login">
+        <div class="login-box">
+          <div class="login-title">🔑 로그인</div>
+          <div class="error-msg" id="login-error"></div>
+          <div class="form-row"><span class="form-label">이메일</span><input class="xp-input" id="login-email" type="email" placeholder="example@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+          <div class="form-row"><span class="form-label">비밀번호</span><input class="xp-input" id="login-pw" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()"></div>
+          <div style="text-align:right;margin-top:4px;">
+            <span class="pw-reset-link" onclick="resetPassword()">비밀번호 찾기</span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="xp-btn" onclick="showSection('register')">회원가입</button>
+          <button class="xp-btn primary" onclick="doLogin()" id="login-btn">🔑 로그인</button>
+        </div>
+      </div>
+
+      <!-- 회원가입 폼 -->
+      <div id="section-register" style="display:none;">
+        <div class="login-box">
+          <div class="login-title">📝 회원가입</div>
+          <div class="error-msg" id="register-error"></div>
+          <div class="form-row"><span class="form-label">이름</span><input class="xp-input" id="reg-name" placeholder="이름 입력"></div>
+          <div class="form-row"><span class="form-label">이메일</span><input class="xp-input" id="reg-email" type="email" placeholder="example@email.com"></div>
+          <div class="form-row"><span class="form-label">비밀번호</span><input class="xp-input" id="reg-pw" type="password" placeholder="8자 이상"></div>
+          <div class="form-row"><span class="form-label">비밀번호 확인</span><input class="xp-input" id="reg-pw2" type="password" placeholder="비밀번호 재입력"></div>
+          <div class="form-row"><span class="form-label">전화번호</span><input class="xp-input" id="reg-phone" placeholder="010-0000-0000"></div>
+        </div>
+        <div class="btn-row">
+          <button class="xp-btn" onclick="showSection('login')">← 로그인으로</button>
+          <button class="xp-btn primary" onclick="doRegister()">✅ 가입하기</button>
+        </div>
+      </div>
+
+      <!-- 로그인된 상태 -->
+      <div id="section-loggedin" style="display:none;">
+        <div class="user-card">
+          <div class="user-avatar">👤</div>
+          <div class="user-name" id="disp-name">-</div>
+          <div class="user-email" id="disp-email">-</div>
+          <div style="margin-top:12px;font-size:12px;color:#888;" id="disp-join-date"></div>
+        </div>
+        <div class="btn-row">
+          <button class="xp-btn danger" onclick="doLogout()">🚪 로그아웃</button>
+          <button class="xp-btn primary" onclick="switchTab('orders')">📦 내 주문 보기</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 주문내역 탭 -->
+    <div class="tab-content" id="tab-orders">
+      <div id="orders-container">
+        <div class="empty-msg">로그인 후 주문 내역을 확인할 수 있습니다.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="xp-taskbar">
+  <a class="start-btn" href="index.html"><span style="font-size:18px;">🪟</span> 시작</a>
+  <div style="width:2px;height:28px;background:linear-gradient(180deg,#0c3699,#4a7fe0,#0c3699);margin:0 4px;"></div>
+  <span style="background:linear-gradient(180deg,#1a3a99,#2a5cc0);border:1px solid #1a3a99;border-radius:3px;color:white;font-size:11px;padding:0 10px;height:28px;display:flex;align-items:center;">👤 마이페이지</span>
+  <div class="taskbar-right">
+    <a href="cart.html" class="taskbar-icon">🛒<span class="cart-badge" id="cart-badge"></span></a>
+    <div class="taskbar-clock" id="clock"></div>
+  </div>
+</div>
+<div id="xp-notif"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBeqdSmhSTIItrWNKzHLa0ql4SRMrufHNA",
+  authDomain: "gif-t-c7adc.firebaseapp.com",
+  projectId: "gif-t-c7adc",
+  storageBucket: "gif-t-c7adc.firebasestorage.app",
+  messagingSenderId: "974035174986",
+  appId: "1:974035174986:web:d83159ad4151ad12a408b3"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 시계
+(function tick(){const d=new Date();const el=document.getElementById('clock');if(el)el.innerHTML=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'<br>'+(d.getMonth()+1)+'/'+d.getDate();setTimeout(tick,15000);})();
+
+// 장바구니 배지
+const c=JSON.parse(localStorage.getItem('xp_cart')||'[]');if(c.length){const b=document.getElementById('cart-badge');b.textContent=c.length;b.style.display='flex';}
+
+function notif(msg){const el=document.getElementById('xp-notif');el.textContent=msg;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',3000);}
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('on'));
+  document.getElementById('tab-btn-'+t).classList.add('on');
+  document.getElementById('tab-'+t).classList.add('on');
+  if(t==='orders') loadOrders();
+}
+window.switchTab = switchTab;
+
+function showSection(s) {
+  ['login','register','loggedin'].forEach(n=>document.getElementById('section-'+n).style.display='none');
+  document.getElementById('section-'+s).style.display='block';
+}
+window.showSection = showSection;
+
+// 로그인 상태 감지
+onAuthStateChanged(auth, user => {
+  if(user) {
+    showSection('loggedin');
+    document.getElementById('disp-name').textContent = (user.displayName||'회원') + '님';
+    document.getElementById('disp-email').textContent = user.email;
+    const joined = new Date(user.metadata.creationTime).toLocaleDateString('ko-KR');
+    document.getElementById('disp-join-date').textContent = '가입일: ' + joined;
+  } else {
+    showSection('login');
+  }
+});
+
+// 로그인
+window.doLogin = async function() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw = document.getElementById('login-pw').value;
+  const errEl = document.getElementById('login-error');
+  errEl.classList.remove('on');
+  if(!email||!pw){errEl.textContent='이메일과 비밀번호를 입력해주세요.';errEl.classList.add('on');return;}
+  try {
+    document.getElementById('login-btn').textContent = '로그인 중...';
+    await signInWithEmailAndPassword(auth, email, pw);
+    notif('✅ 로그인되었습니다!');
+  } catch(e) {
+    document.getElementById('login-btn').textContent = '🔑 로그인';
+    const msgs = {
+      'auth/user-not-found':'등록되지 않은 이메일입니다.',
+      'auth/wrong-password':'비밀번호가 틀립니다.',
+      'auth/invalid-email':'이메일 형식이 올바르지 않습니다.',
+      'auth/too-many-requests':'잠시 후 다시 시도해주세요.',
+      'auth/invalid-credential':'이메일 또는 비밀번호가 틀립니다.'
+    };
+    errEl.textContent = msgs[e.code]||('오류: '+e.message);
+    errEl.classList.add('on');
+  }
+}
+
+// 회원가입
+window.doRegister = async function() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pw = document.getElementById('reg-pw').value;
+  const pw2 = document.getElementById('reg-pw2').value;
+  const phone = document.getElementById('reg-phone').value.trim();
+  const errEl = document.getElementById('register-error');
+  errEl.classList.remove('on');
+  if(!name||!email||!pw){errEl.textContent='모든 항목을 입력해주세요.';errEl.classList.add('on');return;}
+  if(pw.length<8){errEl.textContent='비밀번호는 8자 이상이어야 합니다.';errEl.classList.add('on');return;}
+  if(pw!==pw2){errEl.textContent='비밀번호가 일치하지 않습니다.';errEl.classList.add('on');return;}
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pw);
+    await updateProfile(cred.user, {displayName: name});
+    // Firestore에 추가 정보 저장
+    const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+    await setDoc(doc(db,'users',cred.user.uid),{name,email,phone,createdAt:new Date()});
+    notif('🎉 회원가입 완료! 환영합니다 '+name+'님!');
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use':'이미 사용 중인 이메일입니다.',
+      'auth/invalid-email':'이메일 형식이 올바르지 않습니다.',
+      'auth/weak-password':'비밀번호가 너무 약합니다.'
+    };
+    errEl.textContent = msgs[e.code]||('오류: '+e.message);
+    errEl.classList.add('on');
+  }
+}
+
+// 로그아웃
+window.doLogout = async function() {
+  await signOut(auth);
+  notif('로그아웃 되었습니다.');
+}
+
+// 비밀번호 재설정
+window.resetPassword = async function() {
+  const email = document.getElementById('login-email').value.trim();
+  if(!email){alert('이메일을 먼저 입력해주세요.');return;}
+  try {
+    await sendPasswordResetEmail(auth, email);
+    notif('📧 비밀번호 재설정 이메일을 보냈습니다!');
+  } catch(e){notif('오류: 이메일을 확인해주세요.');}
+}
+
+// 주문 내역 로드
+async function loadOrders() {
+  const container = document.getElementById('orders-container');
+  const user = auth.currentUser;
+  if(!user){container.innerHTML='<div class="empty-msg">로그인 후 주문 내역을 확인할 수 있습니다.</div>';return;}
+  container.innerHTML='<div class="loading-msg">⏳ 불러오는 중...</div>';
+  try {
+    const q = query(collection(db,'orders'), where('userId','==',user.uid), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    if(snap.empty){container.innerHTML='<div class="empty-msg"><span style="font-size:36px;display:block;margin-bottom:8px;">📦</span>주문 내역이 없습니다.</div>';return;}
+    const statusMap={paid:'결제완료',preparing:'제작중',shipping:'배송중',delivered:'배송완료',cancelled:'취소됨'};
+    const sc={paid:'s-paid',preparing:'s-preparing',shipping:'s-shipping',delivered:'s-delivered',cancelled:'s-cancelled'};
+    container.innerHTML = snap.docs.map(doc=>{
+      const o=doc.data();
+      const dt=o.createdAt?.toDate?.()?.toLocaleDateString('ko-KR')||'-';
+      const thumbs=(o.photoUrls||[]).slice(0,3).map(u=>`<img class="order-photo" src="${u}">`).join('');
+      return `<div class="order-card">
+        <div class="order-top">
+          <span class="order-no">${o.orderNo}</span>
+          <span class="badge ${sc[o.status]||'s-paid'}">${statusMap[o.status]||o.status}</span>
+          <span class="order-no">${dt}</span>
+        </div>
+        <div class="order-body">
+          <div class="order-thumb">👕</div>
+          <div class="order-info">
+            <div class="order-name">${o.productName}</div>
+            <div class="order-detail">${o.size} / ${o.color} / ${o.qty}개</div>
+            <div class="order-detail">${o.photoLayout||''}</div>
+            <div class="order-photos">${thumbs}</div>
+            <div class="order-price">₩${o.totalPrice?.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e){container.innerHTML='<div class="empty-msg">주문 내역을 불러올 수 없습니다.<br>'+e.message+'</div>';}
+}
+</script>
+</body>
+</html>

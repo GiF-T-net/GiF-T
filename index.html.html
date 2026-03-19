@@ -1,0 +1,1099 @@
+<!--@@--><html>
+<!--@layout(/layout/basic/layout.html)@-->
+<!--@css(/css/contents.css)@-->
+<!--@css(/css/module/menu_main.css)@-->
+<!--@js(/js/contents.js)@-->
+<!--@js(/js/jquery.min.js)@-->
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{$mall_name} - 커스텀 후드티 전문</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════
+   CAFE24 XP THEME — INDEX.HTML
+   스마트디자인 호환용
+═══════════════════════════════ */
+
+/* 카페24 기본 레이아웃 리셋 */
+#contents { padding: 0 !important; margin: 0 !important; }
+#wrap, #container { background: transparent !important; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nanum Gothic', Tahoma, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  cursor: default;
+  user-select: none;
+}
+
+/* ── WALLPAPER (XP Bliss) ── */
+.xp-desktop {
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(ellipse at 30% 60%, #3a7bd5 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 40%, #2ecc71 0%, transparent 50%),
+    linear-gradient(180deg, #1a6bb5 0%, #3c9a3c 60%, #2d7a2d 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.xp-desktop::before {
+  content: '';
+  position: absolute;
+  bottom: 40px; left: 0; right: 0;
+  height: 45%;
+  background:
+    radial-gradient(ellipse at 40% 100%, #4caf50 0%, #2d8a2d 50%, transparent 70%),
+    radial-gradient(ellipse at 80% 100%, #3d9140 0%, #2a7a2a 40%, transparent 65%);
+  border-radius: 50% 60% 0 0 / 30% 30% 0 0;
+  z-index: 0;
+}
+
+.xp-desktop::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 55%;
+  background: linear-gradient(180deg, #1565c0 0%, #1976d2 40%, #42a5f5 80%, transparent 100%);
+  z-index: 0;
+}
+
+/* ── DESKTOP ICONS ── */
+.icons-area {
+  position: absolute;
+  top: 20px; left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  z-index: 10;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  width: 78px;
+  text-decoration: none;
+}
+.desktop-icon:hover { background: rgba(255,255,255,0.2); }
+.desktop-icon.selected { background: rgba(49,106,197,0.6); outline: 1px dotted white; }
+
+.icon-img {
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.5));
+}
+
+.icon-label {
+  font-size: 11px; color: white;
+  text-align: center;
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000;
+  line-height: 1.3;
+}
+
+/* ── XP WINDOW ── */
+.xp-window {
+  position: absolute;
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 2px 2px 12px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.25);
+  display: none;
+  z-index: 100;
+  overflow: hidden;
+  min-width: 280px;
+}
+.xp-window.active { display: block; }
+.xp-window.focused { z-index: 200; }
+
+.title-bar {
+  background: linear-gradient(180deg, #3168d5 0%, #1957c2 8%, #1957c2 92%, #3168d5 100%);
+  padding: 4px 6px;
+  display: flex; align-items: center; gap: 6px;
+  cursor: move;
+  border-radius: 6px 6px 0 0;
+  height: 30px;
+}
+.title-bar-icon { font-size: 14px; }
+.title-bar-text {
+  flex: 1; color: white; font-size: 12px; font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.title-btn {
+  width: 21px; height: 21px;
+  border-radius: 3px; border: none; cursor: pointer;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: white; text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+.btn-minimize { background: linear-gradient(180deg,#5aa0e8,#3b7fd4,#2a6bc2); border: 1px solid #1a4a99; }
+.btn-maximize { background: linear-gradient(180deg,#5aa0e8,#3b7fd4,#2a6bc2); border: 1px solid #1a4a99; }
+.btn-close { background: linear-gradient(180deg,#e8605a,#d43b3b,#c22a2a); border: 1px solid #991a1a; margin-left: 2px; }
+.title-btn:hover { filter: brightness(1.2); }
+.title-btn:active { filter: brightness(0.85); }
+
+.menu-bar {
+  background: #ece9d8; border-bottom: 1px solid #aca899;
+  padding: 2px 4px; display: flex; gap: 2px; font-size: 11px;
+}
+.menu-item { padding: 2px 8px; border-radius: 2px; cursor: pointer; color: #222; }
+.menu-item:hover { background: #316ac5; color: white; }
+
+.window-body {
+  background: #f0f0ea;
+  overflow-y: auto;
+  border: 1px solid #aca899;
+  border-top: none;
+}
+.window-body::-webkit-scrollbar { width: 16px; }
+.window-body::-webkit-scrollbar-track { background: #c8c0b8; }
+.window-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg,#e0ddd5,#b8b4ac,#e0ddd5);
+  border: 1px solid #888;
+}
+
+.status-bar {
+  background: #f0f0ea; border-top: 1px solid #aca899;
+  padding: 2px 6px; font-size: 11px; color: #444;
+  display: flex; gap: 4px;
+}
+
+/* ── TASKBAR ── */
+.xp-taskbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(180deg,#245edb 0%,#1a52d5 4%,#1a52d5 96%,#0c3699 100%);
+  border-top: 2px solid #4a7fe0;
+  display: flex; align-items: center;
+  z-index: 9000; padding: 0 4px;
+}
+
+.start-btn {
+  height: 32px; padding: 0 14px 0 8px;
+  background: linear-gradient(180deg,#5db55d,#3a9c3a,#2d8a2d);
+  border: 1px solid #1a5e1a; border-radius: 12px;
+  color: white; font-size: 13px; font-weight: 800;
+  cursor: pointer; display: flex; align-items: center; gap: 6px;
+  font-family: 'Nanum Gothic', Tahoma, sans-serif;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 1px 1px 3px rgba(0,0,0,0.4);
+  text-decoration: none;
+}
+.start-btn:hover { filter: brightness(1.1); }
+
+.taskbar-divider {
+  width: 2px; height: 28px;
+  background: linear-gradient(180deg,#0c3699,#4a7fe0,#0c3699);
+  margin: 0 4px;
+}
+
+.taskbar-tasks {
+  flex: 1; display: flex; gap: 3px; padding: 0 4px; overflow: hidden;
+}
+
+.taskbar-task {
+  height: 28px; padding: 0 8px;
+  background: linear-gradient(180deg,#4a7ad0,#2a5cc0);
+  border: 1px solid #1a3a99; border-radius: 3px;
+  color: white; font-size: 11px; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+  max-width: 160px; overflow: hidden; white-space: nowrap;
+  font-family: 'Nanum Gothic', Tahoma, sans-serif;
+}
+.taskbar-task.active-task {
+  background: linear-gradient(180deg,#1a3a99,#2a5cc0);
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.4);
+}
+
+.taskbar-right {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(0,0,50,0.25);
+  border-left: 1px solid rgba(255,255,255,0.15);
+  height: 100%; padding: 0 8px;
+}
+
+/* 카페24 장바구니 아이콘 연결 */
+.cart-icon-btn {
+  color: white; font-size: 18px; cursor: pointer;
+  text-decoration: none; position: relative;
+}
+.cart-count-badge {
+  position: absolute; top: -4px; right: -6px;
+  background: #ff3b3b; color: white;
+  font-size: 9px; font-weight: 800;
+  width: 16px; height: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.taskbar-clock {
+  color: white; font-size: 11px;
+  text-align: center; min-width: 65px;
+  font-family: 'Nanum Gothic', Tahoma, sans-serif;
+}
+
+/* ══════════════════════════════════
+   WINDOW: 쇼핑몰 안내 (메인)
+══════════════════════════════════ */
+.product-content { padding: 14px; }
+.product-top { display: flex; gap: 14px; margin-bottom: 14px; }
+
+.product-img-box {
+  width: 190px; height: 230px;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  border: 2px inset #888; border-radius: 2px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 56px; flex-direction: column; gap: 8px;
+  cursor: pointer; transition: filter 0.15s;
+}
+.product-img-box:hover { filter: brightness(1.1); }
+.product-img-box .img-label { font-size: 11px; color: rgba(255,255,255,0.85); font-weight: 700; }
+
+/* 카페24 상품 이미지 모듈 자리 */
+.cafe24-product-img img {
+  width: 190px; height: 230px; object-fit: cover;
+  border: 2px inset #888; cursor: pointer;
+}
+
+.product-info { flex: 1; }
+.product-title {
+  font-size: 15px; font-weight: 800; color: #003399;
+  border-bottom: 2px solid #003399; padding-bottom: 6px; margin-bottom: 8px;
+}
+.product-price { font-size: 22px; font-weight: 800; color: #cc0000; margin-bottom: 6px; }
+.product-price small { font-size: 12px; color: #888; text-decoration: line-through; font-weight: 400; }
+.discount-badge {
+  font-size: 11px; background: #cc0000; color: white;
+  padding: 2px 6px; border-radius: 2px; margin-left: 4px;
+}
+.product-desc {
+  font-size: 11px; color: #333; line-height: 1.75;
+  background: white; border: 1px inset #ccc; padding: 8px; margin-bottom: 10px;
+}
+.option-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.option-label { font-size: 12px; font-weight: 700; width: 48px; color: #333; flex-shrink: 0; }
+.xp-select {
+  flex: 1; height: 22px; border: 1px solid #7f9db9;
+  background: white; font-size: 12px;
+  font-family: 'Nanum Gothic', Tahoma, sans-serif; padding: 0 4px;
+}
+
+/* ── 사진 업로드 섹션 ── */
+.photo-section {
+  background: white; border: 2px inset #ccc; padding: 12px;
+  margin-bottom: 12px;
+}
+.photo-section-title {
+  font-size: 13px; font-weight: 800; color: #003399;
+  margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+
+.photo-count-selector { display: flex; gap: 6px; margin-bottom: 12px; }
+.count-btn {
+  flex: 1; height: 36px; border: 2px outset #ddd;
+  background: linear-gradient(180deg,#ece9d8,#d4d0c8);
+  cursor: pointer; font-size: 11px; font-weight: 700;
+  font-family: 'Nanum Gothic', Tahoma, sans-serif;
+  border-radius: 2px; color: #333; line-height: 1.3;
+}
+.count-btn:hover { filter: brightness(1.05); }
+.count-btn:active { border-style: inset; }
+.count-btn.selected {
+  background: linear-gradient(180deg,#316ac5,#1957c2);
+  color: white; border-color: #1a3a99;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+.photo-grid { display: grid; gap: 6px; margin-bottom: 10px; }
+.photo-grid.count-1 { grid-template-columns: 1fr; }
+.photo-grid.count-4 { grid-template-columns: 1fr 1fr; }
+.photo-grid.count-9 { grid-template-columns: 1fr 1fr 1fr; }
+
+.photo-slot {
+  background: #f5f5f5; border: 2px dashed #aca899;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-direction: column; gap: 4px;
+  position: relative; overflow: hidden;
+}
+.photo-grid.count-1 .photo-slot { height: 180px; }
+.photo-grid.count-4 .photo-slot { height: 100px; }
+.photo-grid.count-9 .photo-slot { height: 75px; }
+.photo-slot:hover { background: #e8eaf6; border-color: #316ac5; }
+.slot-icon { font-size: 22px; color: #aca899; }
+.photo-grid.count-4 .slot-icon { font-size: 16px; }
+.photo-grid.count-9 .slot-icon { font-size: 13px; }
+.slot-text { font-size: 10px; color: #888; }
+.photo-grid.count-9 .slot-text { display: none; }
+
+.photo-slot img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.remove-photo-btn {
+  position: absolute; top: 2px; right: 2px;
+  width: 18px; height: 18px;
+  background: rgba(180,0,0,0.85); color: white;
+  border: none; border-radius: 2px; font-size: 10px;
+  cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 5;
+}
+.photo-slot:hover .remove-photo-btn { display: flex; }
+
+.photo-note {
+  font-size: 11px; color: #555;
+  background: #fffde7; border: 1px solid #f0c040;
+  padding: 6px 8px; border-radius: 2px;
+}
+
+/* ── 버튼 ── */
+.xp-btn {
+  height: 28px; padding: 0 14px;
+  border: 2px outset #ddd;
+  background: linear-gradient(180deg,#ece9d8,#d4d0c8);
+  cursor: pointer; font-size: 12px; font-weight: 700;
+  font-family: 'Nanum Gothic', Tahoma, sans-serif;
+  border-radius: 2px; color: #333;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+.xp-btn:hover { filter: brightness(1.05); }
+.xp-btn:active { border-style: inset; }
+.xp-btn.primary {
+  background: linear-gradient(180deg,#5aa0e8,#316ac5,#1957c2);
+  color: white; border-color: #1a3a99;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+.btn-row {
+  display: flex; gap: 8px; justify-content: flex-end;
+  padding: 8px 14px 12px;
+  border-top: 1px solid #aca899; background: #f0f0ea;
+}
+
+/* ══════════════════════════════════
+   WINDOW: 카테고리 / 이벤트
+══════════════════════════════════ */
+.category-content { padding: 12px; }
+.category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.category-card {
+  background: white; border: 1px solid #ccc; padding: 14px;
+  text-align: center; cursor: pointer; text-decoration: none;
+  display: block; transition: background 0.15s;
+}
+.category-card:hover { background: #e8f0fe; border-color: #316ac5; }
+.category-card .cat-icon { font-size: 32px; display: block; margin-bottom: 6px; }
+.category-card .cat-name { font-size: 12px; font-weight: 700; color: #003399; margin-bottom: 2px; }
+.category-card .cat-count { font-size: 11px; color: #888; }
+
+/* 이벤트 배너 */
+.event-banner {
+  margin: 12px 0;
+  background: linear-gradient(135deg,#003399,#0055cc);
+  color: white; padding: 16px;
+  border: 2px outset #4477ff;
+  text-align: center; cursor: pointer;
+}
+.event-banner .ev-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+.event-banner .ev-sub { font-size: 12px; opacity: 0.85; }
+.event-badge {
+  display: inline-block; background: #ffcc00; color: #cc0000;
+  font-size: 11px; font-weight: 800; padding: 2px 8px;
+  border-radius: 2px; margin-bottom: 6px;
+}
+
+/* ══════════════════════════════════
+   WINDOW: 쇼핑몰 정보
+══════════════════════════════════ */
+.info-content { padding: 18px; }
+.info-logo {
+  text-align: center; font-size: 28px; font-weight: 800; color: #003399;
+  margin-bottom: 4px; text-shadow: 2px 2px 4px rgba(0,0,100,0.2);
+}
+.info-tagline { text-align: center; font-size: 11px; color: #888; margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+.info-row { display: flex; gap: 8px; margin-bottom: 7px; font-size: 12px; }
+.info-key { font-weight: 700; color: #003399; width: 76px; flex-shrink: 0; }
+.info-val { color: #333; line-height: 1.5; }
+
+/* ══════════════════════════════════
+   DIALOG
+══════════════════════════════════ */
+.xp-dialog {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+  z-index: 9999; display: none; align-items: center; justify-content: center;
+}
+.xp-dialog.active { display: flex; }
+.dialog-box {
+  background: #f0f0ea; border: 2px solid #316ac5;
+  border-radius: 8px 8px 4px 4px; min-width: 280px;
+  box-shadow: 4px 4px 14px rgba(0,0,0,0.5); overflow: hidden;
+}
+.dialog-title {
+  background: linear-gradient(180deg,#3168d5,#1957c2);
+  padding: 5px 10px; color: white; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; gap: 6px;
+}
+.dialog-body { padding: 18px; display: flex; gap: 14px; align-items: flex-start; }
+.dialog-icon { font-size: 30px; flex-shrink: 0; }
+.dialog-text { font-size: 12px; line-height: 1.75; color: #222; }
+.dialog-btns { display: flex; gap: 8px; justify-content: flex-end; padding: 8px 14px 12px; }
+
+/* ══════════════════════════════════
+   NOTIFICATION (시스템 트레이 팝업)
+══════════════════════════════════ */
+.xp-notif {
+  position: fixed; bottom: 46px; right: 4px;
+  background: #ffffe1; border: 1px solid #808000;
+  padding: 8px 12px; font-size: 11px;
+  z-index: 8000; max-width: 220px;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.3); display: none; border-radius: 2px;
+}
+.xp-notif.show { display: block; animation: ntfIn 0.2s ease; }
+@keyframes ntfIn { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ══════════════════════════════════
+   START MENU
+══════════════════════════════════ */
+.start-menu {
+  position: fixed; bottom: 40px; left: 0;
+  width: 300px;
+  background: #d9e8f7;
+  border: 2px solid #316ac5;
+  border-bottom: none; border-radius: 8px 8px 0 0;
+  box-shadow: 2px -2px 10px rgba(0,0,0,0.4);
+  display: none; z-index: 8500; overflow: hidden;
+}
+.start-menu.active { display: block; }
+.start-menu-header {
+  background: linear-gradient(90deg,#1957c2,#3168d5);
+  padding: 12px 14px; display: flex; align-items: center; gap: 10px;
+}
+.start-menu-avatar {
+  width: 40px; height: 40px; border-radius: 4px;
+  background: rgba(255,255,255,0.25); border: 2px solid rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.start-menu-username { color: white; font-size: 14px; font-weight: 800; }
+.start-menu-body { display: flex; }
+.start-menu-left { flex: 1; padding: 8px 0; background: white; }
+.start-menu-right { width: 120px; padding: 8px 0; background: #d9e8f7; }
+.start-menu-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px; font-size: 12px; cursor: pointer;
+  text-decoration: none; color: #222; font-weight: 700;
+}
+.start-menu-item:hover { background: #316ac5; color: white; }
+.start-menu-item .sm-icon { font-size: 18px; width: 22px; text-align: center; }
+.start-menu-divider { height: 1px; background: #ccc; margin: 4px 8px; }
+.start-menu-footer {
+  background: #3d6cc0; padding: 6px 10px;
+  display: flex; justify-content: flex-end; gap: 6px;
+}
+
+input[type=file] { display: none; }
+</style>
+</head>
+
+<body>
+<div class="xp-desktop" id="xp-desktop">
+
+  <!-- ═══════════════════════════
+       DESKTOP ICONS
+  ════════════════════════════ -->
+  <div class="icons-area">
+    <div class="desktop-icon" ondblclick="openWin('product')" onclick="selIcon(this)">
+      <div class="icon-img">👕</div>
+      <div class="icon-label">커스텀 후드티</div>
+    </div>
+    <div class="desktop-icon" ondblclick="openWin('category')" onclick="selIcon(this)">
+      <div class="icon-img">🗂️</div>
+      <div class="icon-label">카테고리</div>
+    </div>
+    <!-- 카페24 장바구니 페이지 링크 -->
+    <a class="desktop-icon" href="/order/basket.html" onclick="selIcon(this)">
+      <div class="icon-img">🛒</div>
+      <div class="icon-label">장바구니</div>
+    </a>
+    <!-- 카페24 마이페이지 링크 -->
+    <a class="desktop-icon" href="/myshop/main.html" onclick="selIcon(this)">
+      <div class="icon-img">👤</div>
+      <div class="icon-label">마이페이지</div>
+    </a>
+    <div class="desktop-icon" ondblclick="openWin('info')" onclick="selIcon(this)">
+      <div class="icon-img">ℹ️</div>
+      <div class="icon-label">쇼핑몰 정보</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       WINDOW 1: 커스텀 후드티 상품
+  ══════════════════════════════════════════════ -->
+  <div class="xp-window" id="win-product" style="width:560px; top:40px; left:110px;">
+    <div class="title-bar" onmousedown="startDrag(event,'win-product')">
+      <span class="title-bar-icon">👕</span>
+      <span class="title-bar-text">커스텀 후드티 — 상품 상세</span>
+      <button class="title-btn btn-minimize" onclick="minimizeWin('win-product')">_</button>
+      <button class="title-btn btn-maximize">□</button>
+      <button class="title-btn btn-close" onclick="closeWin('win-product')">✕</button>
+    </div>
+    <div class="menu-bar">
+      <span class="menu-item" onclick="goPage('/index.html')">홈(H)</span>
+      <span class="menu-item" onclick="goPage('/product/list.html')">전체상품(P)</span>
+      <span class="menu-item" onclick="goPage('/order/basket.html')">장바구니(B)</span>
+      <span class="menu-item" onclick="goPage('/myshop/main.html')">마이페이지(M)</span>
+    </div>
+    <div class="window-body" style="max-height:500px;">
+      <div class="product-content">
+        <div class="product-top">
+          <!-- 상품 이미지 -->
+          <div class="product-img-box" onclick="goPage('/product/detail.html?product_no={$product_no}')">
+            <span>👕</span>
+            <span class="img-label">클릭하여 상세보기</span>
+          </div>
+
+          <div class="product-info">
+            <!-- 카페24 변수: 상품명 -->
+            <div class="product-title">✨ 나만의 커스텀 후드티</div>
+
+            <!-- 카페24 변수: 가격 -->
+            <div class="product-price">
+              ₩39,900
+              <small>₩59,000</small>
+              <span class="discount-badge">32% 할인</span>
+            </div>
+
+            <div class="product-desc">
+              고객님이 직접 업로드한 사진으로 제작하는<br>
+              세상에 하나뿐인 커스텀 후드티입니다.<br><br>
+              • 소재: 380g 프리미엄 면 혼방<br>
+              • 인쇄: DTF 고품질 풀컬러 인쇄<br>
+              • 제작기간: 주문 후 5~7일<br>
+              • 배송: 전국 무료배송
+            </div>
+
+            <!-- 사이즈 옵션 (카페24 상품 옵션 모듈 대체용) -->
+            <div class="option-row">
+              <span class="option-label">사이즈</span>
+              <select class="xp-select" id="opt-size">
+                <option value="">-- 사이즈 선택 --</option>
+                <option value="S">S (95)</option>
+                <option value="M">M (100)</option>
+                <option value="L">L (105)</option>
+                <option value="XL">XL (110)</option>
+                <option value="2XL">2XL (115)</option>
+              </select>
+            </div>
+            <div class="option-row">
+              <span class="option-label">색상</span>
+              <select class="xp-select" id="opt-color">
+                <option value="">-- 색상 선택 --</option>
+                <option value="white">⬜ 화이트</option>
+                <option value="black">⬛ 블랙</option>
+                <option value="gray">🟫 그레이</option>
+                <option value="navy">🟦 네이비</option>
+              </select>
+            </div>
+            <div class="option-row">
+              <span class="option-label">수량</span>
+              <input type="number" class="xp-select" id="opt-qty" value="1" min="1" max="10"
+                     style="width:60px;flex:none;text-align:center;">
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 사진 업로드 ── -->
+        <div class="photo-section">
+          <div class="photo-section-title">
+            📷 나만의 사진 업로드
+            <span style="font-size:11px;color:#888;font-weight:400;">(레이아웃 선택 후 사진을 업로드하세요)</span>
+          </div>
+
+          <div class="photo-count-selector">
+            <button class="count-btn selected" onclick="setPhotoCount(1,this)">
+              📸 1장<br><small style="font-size:10px">단독 프린트</small>
+            </button>
+            <button class="count-btn" onclick="setPhotoCount(4,this)">
+              🔲 4장<br><small style="font-size:10px">2×2 배열</small>
+            </button>
+            <button class="count-btn" onclick="setPhotoCount(9,this)">
+              ⊞ 9장<br><small style="font-size:10px">3×3 배열</small>
+            </button>
+          </div>
+
+          <div class="photo-grid count-1" id="photo-grid"></div>
+
+          <div class="photo-note">
+            💡 <strong>고화질 JPG·PNG 권장</strong> (최대 10MB/장) — 업로드된 사진은 주문 시 함께 전송됩니다.
+          </div>
+        </div>
+      </div>
+
+      <!-- 버튼: 카페24 장바구니/바로구매 폼으로 연결 -->
+      <div class="btn-row">
+        <button class="xp-btn" onclick="closeWin('win-product')">취소</button>
+        <button class="xp-btn" onclick="addToCart()">🛒 장바구니 담기</button>
+        <button class="xp-btn primary" onclick="buyNow()">⚡ 바로 구매</button>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span>👕 커스텀 후드티</span>
+      <span>|</span>
+      <span>₩39,900</span>
+      <span>|</span>
+      <span id="photo-status-txt">사진 0장 선택됨</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       WINDOW 2: 카테고리
+  ══════════════════════════════════════════════ -->
+  <div class="xp-window" id="win-category" style="width:380px; top:60px; left:180px;">
+    <div class="title-bar" onmousedown="startDrag(event,'win-category')">
+      <span class="title-bar-icon">🗂️</span>
+      <span class="title-bar-text">카테고리</span>
+      <button class="title-btn btn-minimize" onclick="minimizeWin('win-category')">_</button>
+      <button class="title-btn btn-maximize">□</button>
+      <button class="title-btn btn-close" onclick="closeWin('win-category')">✕</button>
+    </div>
+    <div class="window-body">
+      <div class="category-content">
+        <!-- 이벤트 배너 -->
+        <div class="event-banner" onclick="goPage('/product/list.html?cate_no=1')">
+          <div class="event-badge">🔥 한정 이벤트</div>
+          <div class="ev-title">커스텀 후드티 첫 구매 20% 할인!</div>
+          <div class="ev-sub">쿠폰코드: XPSHOP2005</div>
+        </div>
+
+        <!-- 카페24 카테고리 링크 -->
+        <div class="category-grid">
+          <a class="category-card" href="/product/list.html?cate_no=1">
+            <span class="cat-icon">👕</span>
+            <div class="cat-name">후드티 전체</div>
+            <div class="cat-count">상품 보러가기 →</div>
+          </a>
+          <a class="category-card" href="/product/list.html?cate_no=2">
+            <span class="cat-icon">🖼️</span>
+            <div class="cat-name">사진 1장 프린트</div>
+            <div class="cat-count">단독 프린트</div>
+          </a>
+          <a class="category-card" href="/product/list.html?cate_no=3">
+            <span class="cat-icon">🔲</span>
+            <div class="cat-name">4컷 콜라주</div>
+            <div class="cat-count">2×2 배열</div>
+          </a>
+          <a class="category-card" href="/product/list.html?cate_no=4">
+            <span class="cat-icon">⊞</span>
+            <div class="cat-name">9컷 콜라주</div>
+            <div class="cat-count">3×3 배열</div>
+          </a>
+          <a class="category-card" href="/product/list.html?cate_no=5">
+            <span class="cat-icon">🎁</span>
+            <div class="cat-name">선물세트</div>
+            <div class="cat-count">포장 포함</div>
+          </a>
+          <a class="category-card" href="/product/list.html?cate_no=6">
+            <span class="cat-icon">💰</span>
+            <div class="cat-name">세일</div>
+            <div class="cat-count">특가 상품</div>
+          </a>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="xp-btn primary" onclick="goPage('/product/list.html')">전체 상품 보기 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       WINDOW 3: 쇼핑몰 정보
+  ══════════════════════════════════════════════ -->
+  <div class="xp-window" id="win-info" style="width:330px; top:80px; left:250px;">
+    <div class="title-bar" onmousedown="startDrag(event,'win-info')">
+      <span class="title-bar-icon">ℹ️</span>
+      <span class="title-bar-text">{$mall_name} — 쇼핑몰 정보</span>
+      <button class="title-btn btn-minimize" onclick="minimizeWin('win-info')">_</button>
+      <button class="title-btn btn-maximize">□</button>
+      <button class="title-btn btn-close" onclick="closeWin('win-info')">✕</button>
+    </div>
+    <div class="window-body">
+      <div class="info-content">
+        <div class="info-logo">👕 {$mall_name}</div>
+        <div class="info-tagline">세상에 하나뿐인 나만의 커스텀 후드티</div>
+
+        <!-- 카페24 사업자정보 변수 -->
+        <div class="info-row"><span class="info-key">상호</span><span class="info-val">{$company_name}</span></div>
+        <div class="info-row"><span class="info-key">대표자</span><span class="info-val">{$company_owner}</span></div>
+        <div class="info-row"><span class="info-key">사업자번호</span><span class="info-val">{$company_id}</span></div>
+        <div class="info-row"><span class="info-key">주소</span><span class="info-val">{$company_address}</span></div>
+        <div class="info-row"><span class="info-key">이메일</span><span class="info-val">{$company_email}</span></div>
+        <div class="info-row"><span class="info-key">전화</span><span class="info-val">{$company_phone}</span></div>
+        <div class="info-row"><span class="info-key">운영시간</span><span class="info-val">평일 10:00 ~ 18:00</span></div>
+
+        <div style="margin-top:14px;padding:10px;background:#e8f0fe;border:1px solid #3366cc;border-radius:2px;font-size:11px;color:#1a3a99;line-height:1.6;">
+          🌟 고품질 DTF 인쇄로 고객님의 소중한 사진을 옷으로 만들어 드립니다!
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="xp-btn" onclick="goPage('/cs/notice.html')">📢 공지사항</button>
+        <button class="xp-btn primary" onclick="closeWin('win-info')">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DIALOG: 오류 안내
+  ══════════════════════════════════════════════ -->
+  <div class="xp-dialog" id="dlg-error">
+    <div class="dialog-box">
+      <div class="dialog-title">⚠️ 확인 필요</div>
+      <div class="dialog-body">
+        <span class="dialog-icon">⚠️</span>
+        <span class="dialog-text" id="dlg-error-msg">옵션을 모두 선택해주세요.</span>
+      </div>
+      <div class="dialog-btns">
+        <button class="xp-btn primary" onclick="closeDlg('dlg-error')">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       START MENU
+  ══════════════════════════════════════════════ -->
+  <div class="start-menu" id="start-menu">
+    <div class="start-menu-header">
+      <div class="start-menu-avatar">👤</div>
+      <div class="start-menu-username">{$member_id|default:'방문자'}</div>
+    </div>
+    <div class="start-menu-body">
+      <div class="start-menu-left">
+        <a class="start-menu-item" href="/index.html">
+          <span class="sm-icon">🏠</span> 홈
+        </a>
+        <a class="start-menu-item" href="/product/list.html">
+          <span class="sm-icon">👕</span> 전체 상품
+        </a>
+        <a class="start-menu-item" href="/order/basket.html">
+          <span class="sm-icon">🛒</span> 장바구니
+        </a>
+        <div class="start-menu-divider"></div>
+        <a class="start-menu-item" href="/myshop/main.html">
+          <span class="sm-icon">👤</span> 마이페이지
+        </a>
+        <a class="start-menu-item" href="/myshop/order_list.html">
+          <span class="sm-icon">📦</span> 주문조회
+        </a>
+        <div class="start-menu-divider"></div>
+        <a class="start-menu-item" href="/cs/notice.html">
+          <span class="sm-icon">📢</span> 공지사항
+        </a>
+        <a class="start-menu-item" href="/cs/faq.html">
+          <span class="sm-icon">❓</span> FAQ
+        </a>
+      </div>
+      <div class="start-menu-right">
+        <a class="start-menu-item" href="/product/list.html?cate_no=1" style="font-size:11px;">
+          <span class="sm-icon">👕</span> 후드티
+        </a>
+        <a class="start-menu-item" href="/product/list.html?cate_no=5" style="font-size:11px;">
+          <span class="sm-icon">🎁</span> 선물세트
+        </a>
+        <a class="start-menu-item" href="/product/list.html?cate_no=6" style="font-size:11px;">
+          <span class="sm-icon">💰</span> 세일
+        </a>
+      </div>
+    </div>
+    <div class="start-menu-footer">
+      <a href="/member/logout.html" style="color:white;font-size:11px;text-decoration:none;">🔒 로그아웃</a>
+    </div>
+  </div>
+
+</div><!-- /xp-desktop -->
+
+<!-- 시스템 트레이 알림 -->
+<div class="xp-notif" id="xp-notif"></div>
+
+<!-- ═══════════════════════════════════════════
+     TASKBAR
+══════════════════════════════════════════════ -->
+<div class="xp-taskbar">
+  <button class="start-btn" onclick="toggleStartMenu()">
+    <span style="font-size:18px;">🪟</span> 시작
+  </button>
+  <div class="taskbar-divider"></div>
+  <div class="taskbar-tasks" id="taskbar-tasks"></div>
+  <div class="taskbar-right">
+    <!-- 카페24 장바구니 바로가기 -->
+    <a href="/order/basket.html" class="cart-icon-btn" title="장바구니">
+      🛒
+    </a>
+    <!-- 카페24 로그인/마이페이지 -->
+    <a href="/myshop/main.html" class="cart-icon-btn" title="마이페이지">👤</a>
+    <div class="taskbar-clock" id="taskbar-clock">--:--<br>--/--</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     카페24 장바구니 폼 (숨김 — JS가 제출)
+     실제 카페24 스킨에서는 {module:basket} 혹은
+     공식 basket form action을 사용하세요.
+══════════════════════════════════════════════ -->
+<form id="cf24-cart-form" method="post" action="/exec/front/order/basket" enctype="multipart/form-data" style="display:none;">
+  <input type="hidden" name="product_no" value="1">
+  <input type="hidden" name="product_code" id="cf24-product-code" value="">
+  <input type="hidden" name="quantity" id="cf24-qty" value="1">
+  <input type="hidden" name="option1" id="cf24-size" value="">
+  <input type="hidden" name="option2" id="cf24-color" value="">
+  <!-- 사진 레이아웃 정보를 텍스트로 전달 -->
+  <input type="hidden" name="custom_option1" id="cf24-photo-layout" value="">
+  <!-- 업로드 사진 파일들 -->
+  <input type="file" name="attach_file1" id="cf24-file1" accept="image/*" multiple>
+</form>
+
+<script>
+// ═══════════════════════════════════════════
+// CAFE24 XP THEME — JavaScript
+// ═══════════════════════════════════════════
+
+// ── 상태 ──
+let photoCount = 1;
+let photoData = {};      // idx → dataURL (미리보기용)
+let photoFiles = {};     // idx → File (실제 업로드용)
+let zTop = 200;
+let openWins = new Set();
+let dragSt = null;
+
+// ── 시계 ──
+function updateClock() {
+  const d = new Date();
+  const hm = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  const md = (d.getMonth()+1) + '/' + d.getDate();
+  document.getElementById('taskbar-clock').innerHTML = hm + '<br>' + md;
+}
+updateClock();
+setInterval(updateClock, 15000);
+
+// ── 아이콘 선택 ──
+function selIcon(el) {
+  document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+}
+document.getElementById('xp-desktop').addEventListener('click', e => {
+  if (!e.target.closest('.desktop-icon') && !e.target.closest('.xp-window') && !e.target.closest('.start-menu')) {
+    document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+    closeStartMenu();
+  }
+});
+
+// ── 창 관리 ──
+function openWin(id) {
+  const w = document.getElementById('win-' + id);
+  w.classList.add('active');
+  focusWin('win-' + id);
+  openWins.add(id);
+  updateTaskbar();
+}
+
+function closeWin(winId) {
+  document.getElementById(winId).classList.remove('active');
+  openWins.delete(winId.replace('win-', ''));
+  updateTaskbar();
+}
+
+function minimizeWin(winId) {
+  document.getElementById(winId).classList.remove('active');
+}
+
+function focusWin(winId) {
+  document.querySelectorAll('.xp-window').forEach(w => w.classList.remove('focused'));
+  const w = document.getElementById(winId);
+  if (!w) return;
+  w.style.zIndex = ++zTop;
+  w.classList.add('focused');
+}
+
+document.querySelectorAll('.xp-window').forEach(w => {
+  w.addEventListener('mousedown', () => focusWin(w.id));
+});
+
+// ── 작업표시줄 ──
+const winLabels = { product:'👕 커스텀 후드티', category:'🗂️ 카테고리', info:'ℹ️ 쇼핑몰 정보' };
+function updateTaskbar() {
+  const area = document.getElementById('taskbar-tasks');
+  area.innerHTML = '';
+  openWins.forEach(id => {
+    const btn = document.createElement('button');
+    btn.className = 'taskbar-task';
+    const w = document.getElementById('win-' + id);
+    if (w && w.classList.contains('active')) btn.classList.add('active-task');
+    btn.textContent = winLabels[id] || id;
+    btn.onclick = () => {
+      const win = document.getElementById('win-' + id);
+      if (!win.classList.contains('active')) { win.classList.add('active'); focusWin('win-' + id); }
+      else focusWin('win-' + id);
+      updateTaskbar();
+    };
+    area.appendChild(btn);
+  });
+}
+
+// ── 드래그 ──
+function startDrag(e, winId) {
+  if (e.target.closest('.title-btn')) return;
+  focusWin(winId);
+  const r = document.getElementById(winId).getBoundingClientRect();
+  dragSt = { winId, sx: e.clientX, sy: e.clientY, ol: r.left, ot: r.top };
+  document.addEventListener('mousemove', onDrag);
+  document.addEventListener('mouseup', stopDrag);
+  e.preventDefault();
+}
+function onDrag(e) {
+  if (!dragSt) return;
+  const w = document.getElementById(dragSt.winId);
+  w.style.left = Math.max(0, Math.min(window.innerWidth - 200, dragSt.ol + e.clientX - dragSt.sx)) + 'px';
+  w.style.top  = Math.max(0, Math.min(window.innerHeight - 80,  dragSt.ot + e.clientY - dragSt.sy)) + 'px';
+}
+function stopDrag() {
+  dragSt = null;
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('mouseup', stopDrag);
+}
+
+// ── 사진 업로드 ──
+function setPhotoCount(n, btn) {
+  photoCount = n;
+  photoData = {}; photoFiles = {};
+  document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  renderGrid();
+  updatePhotoStatus();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('photo-grid');
+  grid.className = 'photo-grid count-' + photoCount;
+  grid.innerHTML = '';
+  for (let i = 0; i < photoCount; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'photo-slot';
+    slot.dataset.idx = i;
+    slot.innerHTML = `<span class="slot-icon">📷</span><span class="slot-text">클릭하여 업로드</span>
+      <button class="remove-photo-btn" onclick="removePhoto(${i},event)">✕</button>`;
+    if (photoData[i]) {
+      const img = document.createElement('img');
+      img.src = photoData[i];
+      slot.appendChild(img);
+    }
+    slot.addEventListener('click', e => {
+      if (e.target.classList.contains('remove-photo-btn')) return;
+      pickPhoto(i);
+    });
+    grid.appendChild(slot);
+  }
+}
+
+function pickPhoto(idx) {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { showNotif('⚠️ 10MB 이하 파일만 업로드 가능합니다.'); return; }
+    photoFiles[idx] = file;
+    const fr = new FileReader();
+    fr.onload = ev => { photoData[idx] = ev.target.result; renderGrid(); updatePhotoStatus(); };
+    fr.readAsDataURL(file);
+  };
+  inp.click();
+}
+
+function removePhoto(idx, e) {
+  e.stopPropagation();
+  delete photoData[idx]; delete photoFiles[idx];
+  renderGrid(); updatePhotoStatus();
+}
+
+function updatePhotoStatus() {
+  const cnt = Object.keys(photoData).length;
+  document.getElementById('photo-status-txt').textContent =
+    `사진 ${cnt}장 선택됨 (${photoCount}장 레이아웃)`;
+}
+
+// ── 장바구니 / 구매 → 카페24 연동 ──
+function validateOrder() {
+  const size  = document.getElementById('opt-size').value;
+  const color = document.getElementById('opt-color').value;
+  if (!size)  { showDlgError('사이즈를 선택해주세요.'); return false; }
+  if (!color) { showDlgError('색상을 선택해주세요.'); return false; }
+  if (Object.keys(photoData).length === 0) {
+    showDlgError('사진을 최소 1장 이상 업로드해주세요.'); return false;
+  }
+  return true;
+}
+
+function fillForm() {
+  document.getElementById('cf24-qty').value   = document.getElementById('opt-qty').value;
+  document.getElementById('cf24-size').value  = document.getElementById('opt-size').value;
+  document.getElementById('cf24-color').value = document.getElementById('opt-color').value;
+  document.getElementById('cf24-photo-layout').value =
+    photoCount + '장 레이아웃 (' + Object.keys(photoFiles).length + '장 업로드)';
+
+  // DataTransfer로 다중 파일을 input[file]에 세팅
+  const dt = new DataTransfer();
+  Object.values(photoFiles).forEach(f => dt.items.add(f));
+  document.getElementById('cf24-file1').files = dt.files;
+}
+
+function addToCart() {
+  if (!validateOrder()) return;
+  fillForm();
+  // 카페24 장바구니 AJAX (echosting 공식 방식)
+  // 실제 운영 시: basket_form submit 또는 CAFE24 JS API 사용
+  document.getElementById('cf24-cart-form').submit();
+}
+
+function buyNow() {
+  if (!validateOrder()) return;
+  fillForm();
+  // 바로구매: action을 바로구매 URL로 변경
+  const form = document.getElementById('cf24-cart-form');
+  form.action = '/exec/front/order/direct';
+  form.submit();
+}
+
+function goPage(url) { window.location.href = url; }
+
+// ── 다이얼로그 ──
+function showDlgError(msg) {
+  document.getElementById('dlg-error-msg').textContent = msg;
+  document.getElementById('dlg-error').classList.add('active');
+}
+function closeDlg(id) { document.getElementById(id).classList.remove('active'); }
+
+// ── 알림 ──
+function showNotif(msg) {
+  const el = document.getElementById('xp-notif');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── 시작 메뉴 ──
+function toggleStartMenu() {
+  document.getElementById('start-menu').classList.toggle('active');
+}
+function closeStartMenu() {
+  document.getElementById('start-menu').classList.remove('active');
+}
+
+// ── 초기화 ──
+renderGrid();
+updatePhotoStatus();
+</script>
+
+</body>
+</html>

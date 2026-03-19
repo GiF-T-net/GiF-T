@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>문의하기 — XP Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nanum Gothic',Tahoma,sans-serif;background:linear-gradient(180deg,#1a6bb5 0%,#3c9a3c 60%,#2d7a2d 100%);min-height:100vh;padding:20px 20px 60px;display:flex;justify-content:center;}
+.xp-win{background:#f0f0ea;border-radius:8px 8px 4px 4px;box-shadow:2px 2px 12px rgba(0,0,0,0.55);width:100%;max-width:520px;height:fit-content;}
+.title-bar{background:linear-gradient(180deg,#3168d5,#1957c2 8%,#1957c2 92%,#3168d5);padding:4px 6px;display:flex;align-items:center;gap:6px;height:30px;border-radius:6px 6px 0 0;}
+.tb-text{flex:1;color:white;font-size:12px;font-weight:700;}
+.title-btn{width:21px;height:21px;border-radius:3px;border:none;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:white;text-decoration:none;}
+.btn-cls{background:linear-gradient(180deg,#e8605a,#c22a2a);border:1px solid #991a1a;margin-left:2px;}
+.menu-bar{background:#ece9d8;border-bottom:1px solid #aca899;padding:2px 4px;display:flex;gap:2px;font-size:11px;}
+.mi{padding:2px 8px;border-radius:2px;cursor:pointer;color:#222;text-decoration:none;display:inline-block;}
+.mi:hover{background:#316ac5;color:white;}
+.win-body{background:#f0f0ea;border:1px solid #aca899;border-top:none;padding:14px;}
+.tabs{display:flex;gap:0;margin-bottom:14px;border-bottom:2px solid #316ac5;}
+.tab{padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;color:#555;border:1px solid #aca899;border-bottom:none;background:linear-gradient(180deg,#ece9d8,#d4d0c8);border-radius:4px 4px 0 0;margin-right:2px;}
+.tab.on{background:#316ac5;color:white;border-color:#1a3a99;}
+.tab-content{display:none;}
+.tab-content.on{display:block;}
+.section{background:white;border:1px inset #ccc;padding:12px;margin-bottom:12px;}
+.section-title{font-size:13px;font-weight:800;color:#003399;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #d4d0c8;}
+.form-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+.form-label{font-size:12px;font-weight:700;color:#333;width:70px;flex-shrink:0;}
+.xp-input{height:24px;border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 6px;flex:1;}
+.xp-select{height:24px;border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:0 4px;flex:1;}
+.xp-textarea{border:1px solid #7f9db9;background:white;font-size:12px;font-family:'Nanum Gothic',Tahoma,sans-serif;padding:6px;width:100%;resize:vertical;min-height:100px;}
+.inq-item{background:white;border:1px solid #ccc;padding:10px;margin-bottom:8px;cursor:pointer;}
+.inq-item:hover{border-color:#316ac5;}
+.inq-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.inq-title-text{font-size:13px;font-weight:700;color:#003399;}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:2px;}
+.s-answered{background:#27ae60;color:white;}
+.s-waiting{background:#e67e22;color:white;}
+.inq-answer{background:#f0f5ff;border-left:3px solid #316ac5;padding:8px;margin-top:8px;font-size:12px;display:none;}
+.faq-item{background:white;border:1px solid #ccc;margin-bottom:6px;overflow:hidden;}
+.faq-q{padding:10px 12px;font-size:13px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;}
+.faq-q:hover{background:#f0f5ff;}
+.faq-a{padding:10px 12px;font-size:12px;color:#555;line-height:1.7;border-top:1px solid #e8e8e8;display:none;}
+.xp-btn{height:28px;padding:0 14px;border:2px outset #ddd;background:linear-gradient(180deg,#ece9d8,#d4d0c8);cursor:pointer;font-size:12px;font-weight:700;font-family:'Nanum Gothic',Tahoma,sans-serif;border-radius:2px;color:#333;}
+.xp-btn.primary{background:linear-gradient(180deg,#5aa0e8,#316ac5,#1957c2);color:white;border-color:#1a3a99;}
+.xp-btn:hover{filter:brightness(1.05);}
+.xp-btn:active{border-style:inset;}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;padding:10px 0 0;border-top:1px solid #aca899;margin-top:8px;}
+.xp-taskbar{position:fixed;bottom:0;left:0;right:0;height:40px;background:linear-gradient(180deg,#245edb,#1a52d5 4%,#1a52d5 96%,#0c3699);border-top:2px solid #4a7fe0;display:flex;align-items:center;z-index:9000;padding:0 6px;gap:4px;}
+.start-btn{height:32px;padding:0 14px 0 8px;background:linear-gradient(180deg,#5db55d,#3a9c3a,#2d8a2d);border:1px solid #1a5e1a;border-radius:12px;color:white;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Nanum Gothic',Tahoma,sans-serif;text-decoration:none;}
+.taskbar-right{display:flex;align-items:center;gap:8px;margin-left:auto;background:rgba(0,0,50,0.25);border-left:1px solid rgba(255,255,255,0.15);height:100%;padding:0 10px;}
+.taskbar-icon{color:white;font-size:18px;text-decoration:none;}
+.taskbar-clock{color:white;font-size:11px;text-align:center;min-width:60px;line-height:1.4;}
+#xp-notif{position:fixed;bottom:46px;right:4px;background:#ffffe1;border:1px solid #808000;padding:8px 14px;font-size:12px;z-index:99999;max-width:240px;box-shadow:2px 2px 6px rgba(0,0,0,0.3);border-radius:2px;display:none;}
+</style>
+</head>
+<body>
+<div class="xp-win">
+  <div class="title-bar">
+    <span style="font-size:14px;">💬</span>
+    <span class="tb-text">문의하기</span>
+    <a class="title-btn btn-cls" href="index.html">✕</a>
+  </div>
+  <div class="menu-bar">
+    <a class="mi" href="index.html">홈(H)</a>
+    <a class="mi" href="product.html">상품(P)</a>
+    <a class="mi" href="mypage.html">마이페이지(M)</a>
+  </div>
+  <div class="win-body">
+    <div class="tabs">
+      <div class="tab on" onclick="switchTab('write')" id="tab-btn-write">✏️ 문의 작성</div>
+      <div class="tab" onclick="switchTab('list')" id="tab-btn-list">📋 문의 내역</div>
+      <div class="tab" onclick="switchTab('faq')" id="tab-btn-faq">❓ FAQ</div>
+    </div>
+
+    <!-- 문의 작성 -->
+    <div class="tab-content on" id="tab-write">
+      <div class="section">
+        <div class="section-title">✏️ 문의 작성</div>
+        <div class="form-row"><span class="form-label">이름</span><input class="xp-input" id="inq-name" placeholder="이름"></div>
+        <div class="form-row"><span class="form-label">이메일</span><input class="xp-input" id="inq-email" type="email" placeholder="답변 받을 이메일"></div>
+        <div class="form-row"><span class="form-label">주문번호</span><input class="xp-input" id="inq-orderno" placeholder="XP-XXXXXX (선택사항)"></div>
+        <div class="form-row"><span class="form-label">유형</span>
+          <select class="xp-select" id="inq-category">
+            <option value="general">일반 문의</option>
+            <option value="order">주문/결제</option>
+            <option value="delivery">배송</option>
+            <option value="return">교환/환불</option>
+            <option value="custom">커스텀 디자인</option>
+          </select>
+        </div>
+        <div class="form-row"><span class="form-label">제목</span><input class="xp-input" id="inq-title" placeholder="문의 제목"></div>
+        <div style="margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:700;color:#333;margin-bottom:4px;">내용</div>
+          <textarea class="xp-textarea" id="inq-content" placeholder="문의 내용을 자세히 작성해주세요."></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="xp-btn" onclick="location.href='index.html'">취소</button>
+        <button class="xp-btn primary" id="submit-btn" onclick="submitInquiry()">💬 문의 접수</button>
+      </div>
+    </div>
+
+    <!-- 문의 내역 -->
+    <div class="tab-content" id="tab-list">
+      <div id="inq-list"><div style="text-align:center;padding:20px;color:#888;">로그인하면 문의 내역을 볼 수 있습니다.</div></div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="tab-content" id="tab-faq">
+      <div id="faq-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="xp-taskbar">
+  <a class="start-btn" href="index.html"><span style="font-size:18px;">🪟</span> 시작</a>
+  <div style="width:2px;height:28px;background:linear-gradient(180deg,#0c3699,#4a7fe0,#0c3699);margin:0 4px;"></div>
+  <span style="background:linear-gradient(180deg,#1a3a99,#2a5cc0);border:1px solid #1a3a99;border-radius:3px;color:white;font-size:11px;padding:0 10px;height:28px;display:flex;align-items:center;">💬 문의하기</span>
+  <div class="taskbar-right">
+    <a href="cart.html" class="taskbar-icon">🛒</a>
+    <a href="mypage.html" class="taskbar-icon">👤</a>
+    <div class="taskbar-clock" id="clock"></div>
+  </div>
+</div>
+<div id="xp-notif"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey:"AIzaSyBeqdSmhSTIItrWNKzHLa0ql4SRMrufHNA",
+  authDomain:"gif-t-c7adc.firebaseapp.com",
+  projectId:"gif-t-c7adc",
+  storageBucket:"gif-t-c7adc.firebasestorage.app",
+  messagingSenderId:"974035174986",
+  appId:"1:974035174986:web:d83159ad4151ad12a408b3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+(function tick(){const d=new Date();const el=document.getElementById('clock');if(el)el.innerHTML=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+'<br>'+(d.getMonth()+1)+'/'+d.getDate();setTimeout(tick,15000);})();
+
+function notif(msg){const el=document.getElementById('xp-notif');el.textContent=msg;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',3000);}
+
+// 로그인 상태에서 이름/이메일 자동 입력
+onAuthStateChanged(auth, user => {
+  if(user) {
+    document.getElementById('inq-name').value = user.displayName||'';
+    document.getElementById('inq-email').value = user.email||'';
+  }
+});
+
+window.switchTab = function(t) {
+  ['write','list','faq'].forEach(n=>{
+    document.getElementById('tab-btn-'+n).classList.toggle('on',n===t);
+    document.getElementById('tab-'+n).classList.toggle('on',n===t);
+  });
+  if(t==='list') loadInquiries();
+  if(t==='faq') renderFAQ();
+}
+
+window.submitInquiry = async function() {
+  const name=document.getElementById('inq-name').value.trim();
+  const email=document.getElementById('inq-email').value.trim();
+  const title=document.getElementById('inq-title').value.trim();
+  const content=document.getElementById('inq-content').value.trim();
+  if(!name||!email||!title||!content){notif('모든 항목을 입력해주세요.');return;}
+  const btn=document.getElementById('submit-btn');
+  btn.textContent='접수 중...';
+  try {
+    const user=auth.currentUser;
+    await addDoc(collection(db,'inquiries'),{
+      guestName:name, guestEmail:email,
+      orderNo:document.getElementById('inq-orderno').value.trim()||null,
+      category:document.getElementById('inq-category').value,
+      title, content,
+      userId:user?.uid||null,
+      isAnswered:false,
+      createdAt:serverTimestamp()
+    });
+    notif('✅ 문의가 접수되었습니다! 1~2일 내 답변드립니다.');
+    document.getElementById('inq-title').value='';
+    document.getElementById('inq-content').value='';
+  } catch(e){notif('오류: '+e.message);}
+  btn.textContent='💬 문의 접수';
+}
+
+async function loadInquiries() {
+  const el=document.getElementById('inq-list');
+  const user=auth.currentUser;
+  if(!user){el.innerHTML='<div style="text-align:center;padding:20px;color:#888;">로그인 후 문의 내역을 확인할 수 있습니다.</div>';return;}
+  el.innerHTML='<div style="text-align:center;padding:20px;color:#888;">불러오는 중...</div>';
+  try {
+    const q=query(collection(db,'inquiries'),where('userId','==',user.uid),orderBy('createdAt','desc'));
+    const snap=await getDocs(q);
+    if(snap.empty){el.innerHTML='<div style="text-align:center;padding:20px;color:#888;">문의 내역이 없습니다.</div>';return;}
+    el.innerHTML=snap.docs.map((doc,i)=>{
+      const q=doc.data();
+      const dt=q.createdAt?.toDate?.()?.toLocaleDateString('ko-KR')||'-';
+      return `<div class="inq-item" onclick="toggleAns('ans-${i}')">
+        <div class="inq-top">
+          <span class="inq-title-text">${q.title}</span>
+          <span class="badge ${q.isAnswered?'s-answered':'s-waiting'}">${q.isAnswered?'답변완료':'답변대기'}</span>
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:4px;">${dt}</div>
+        <div style="font-size:12px;color:#555;">${q.content.substring(0,60)}${q.content.length>60?'...':''}</div>
+        ${q.answer?`<div class="inq-answer" id="ans-${i}"><strong style="color:#316ac5;">관리자 답변:</strong> ${q.answer}</div>`:''}
+      </div>`;
+    }).join('');
+  } catch(e){el.innerHTML='<div style="text-align:center;padding:20px;color:#888;">불러올 수 없습니다.</div>';}
+}
+
+window.toggleAns = function(id){const el=document.getElementById(id);if(el)el.style.display=el.style.display==='block'?'none':'block';}
+
+const FAQS=[
+  {q:'배송은 얼마나 걸리나요?',a:'주문 확인 후 제작 5~7일 + 배송 1~2일로 총 7~9일 내외입니다.'},
+  {q:'어떤 사진을 올려야 하나요?',a:'고화질 JPG/PNG 파일을 권장합니다. 최대 10MB/장이며 선명한 사진일수록 품질이 좋습니다.'},
+  {q:'교환/환불이 가능한가요?',a:'커스텀 제작 특성상 단순 변심은 어렵습니다. 제품 불량/오인쇄는 수령 후 7일 이내 문의 주시면 처리해드립니다.'},
+  {q:'사이즈를 잘못 선택했어요.',a:'주문 후 24시간 이내 문의 주시면 변경 가능합니다. 제작 시작 후에는 변경이 어렵습니다.'},
+  {q:'1장/4장/9장 배치가 무엇인가요?',a:'1장은 전면 단독 프린트, 4장은 2×2 격자, 9장은 3×3 격자로 사진이 배치됩니다.'},
+];
+
+window.renderFAQ = function(){
+  document.getElementById('faq-list').innerHTML=FAQS.map((f,i)=>`
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(${i})"><span>Q. ${f.q}</span><span id="fa-${i}">▼</span></div>
+      <div class="faq-a" id="faq-a-${i}">A. ${f.a}</div>
+    </div>`).join('');
+}
+window.toggleFAQ=function(i){const el=document.getElementById('faq-a-'+i);const ar=document.getElementById('fa-'+i);const o=el.style.display==='block';el.style.display=o?'none':'block';ar.textContent=o?'▼':'▲';}
+renderFAQ();
+</script>
+</body>
+</html>
